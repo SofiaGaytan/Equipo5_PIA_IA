@@ -11,11 +11,11 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
 
 /**
  *
@@ -24,10 +24,11 @@ import javax.swing.JOptionPane;
 public class EdicionGrafo extends javax.swing.JFrame {
 
     public static Grafo auxiliar = new Grafo();
+    public static ArrayList<String> visitados = new ArrayList<>();
+
     Grafo grafo = new Grafo();
     ArrayList<Nodo> seleccionados = new ArrayList<>();
     ArrayList<Nodo> borrados = new ArrayList<>();
-    Map<String, Float> heuristica = new TreeMap<>();
     Map<String, Float> adyacentes = new TreeMap<>();
     Nodo seleccionado;
     boolean dibujar = false;
@@ -43,6 +44,8 @@ public class EdicionGrafo extends javax.swing.JFrame {
     public EdicionGrafo() {
         initComponents();
         panel.setSize(500, 500);
+        ver.setVisible(false);
+        cancelar.setVisible(false);
     }
 
     @Override
@@ -77,18 +80,19 @@ public class EdicionGrafo extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        dibujarButton = new javax.swing.JToggleButton();
-        EraseNodo = new javax.swing.JToggleButton();
-        CleanButton = new javax.swing.JButton();
-        LineButton = new javax.swing.JToggleButton();
-        jButton1 = new javax.swing.JButton();
+        dibujarN = new javax.swing.JToggleButton();
+        eraserN = new javax.swing.JToggleButton();
+        clear = new javax.swing.JButton();
+        dibujarA = new javax.swing.JToggleButton();
+        download = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         panel = new javax.swing.JPanel();
-        tablaAdy = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        resolver = new javax.swing.JButton();
-        tablaAdy1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        algoritmo = new javax.swing.JButton();
+        resultadoText = new javax.swing.JLabel();
+        cancelar = new javax.swing.JButton();
+        resultadoPanel = new javax.swing.JScrollPane();
+        resultado = new javax.swing.JTextPane();
+        ver = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -96,41 +100,41 @@ public class EdicionGrafo extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        dibujarButton.setText("Dibujar nodo");
-        dibujarButton.setFocusable(false);
-        dibujarButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        dibujarButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        dibujarButton.addActionListener(new java.awt.event.ActionListener() {
+        dibujarN.setText("Dibujar nodo");
+        dibujarN.setFocusable(false);
+        dibujarN.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        dibujarN.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        dibujarN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dibujarButtonActionPerformed(evt);
+                dibujarNActionPerformed(evt);
             }
         });
 
-        EraseNodo.setText("Borrar nodo");
-        EraseNodo.addActionListener(new java.awt.event.ActionListener() {
+        eraserN.setText("Borrar nodo");
+        eraserN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EraseNodoActionPerformed(evt);
+                eraserNActionPerformed(evt);
             }
         });
 
-        CleanButton.setText("Limpiar");
-        CleanButton.addActionListener(new java.awt.event.ActionListener() {
+        clear.setText("Limpiar");
+        clear.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CleanButtonActionPerformed(evt);
+                clearActionPerformed(evt);
             }
         });
 
-        LineButton.setText("Dibujar arista");
-        LineButton.addActionListener(new java.awt.event.ActionListener() {
+        dibujarA.setText("Dibujar arista");
+        dibujarA.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LineButtonActionPerformed(evt);
+                dibujarAActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Descargar imagen");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        download.setText("Descargar imagen");
+        download.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                downloadActionPerformed(evt);
             }
         });
 
@@ -172,42 +176,31 @@ public class EdicionGrafo extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        tablaAdy.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.gray, java.awt.Color.darkGray));
-
-        javax.swing.GroupLayout tablaAdyLayout = new javax.swing.GroupLayout(tablaAdy);
-        tablaAdy.setLayout(tablaAdyLayout);
-        tablaAdyLayout.setHorizontalGroup(
-            tablaAdyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        tablaAdyLayout.setVerticalGroup(
-            tablaAdyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jLabel1.setText("Tabla de Adyacencia");
-
-        resolver.setText("Resolver");
-        resolver.addActionListener(new java.awt.event.ActionListener() {
+        algoritmo.setText("Aplicar Algoritmo");
+        algoritmo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resolverActionPerformed(evt);
+                algoritmoActionPerformed(evt);
             }
         });
 
-        tablaAdy1.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.gray, java.awt.Color.darkGray));
+        resultadoText.setText("Resultado");
 
-        javax.swing.GroupLayout tablaAdy1Layout = new javax.swing.GroupLayout(tablaAdy1);
-        tablaAdy1.setLayout(tablaAdy1Layout);
-        tablaAdy1Layout.setHorizontalGroup(
-            tablaAdy1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 117, Short.MAX_VALUE)
-        );
-        tablaAdy1Layout.setVerticalGroup(
-            tablaAdy1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 246, Short.MAX_VALUE)
-        );
+        cancelar.setText("Salir");
+        cancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelarActionPerformed(evt);
+            }
+        });
 
-        jLabel2.setText("Heuristica");
+        resultado.setEditable(false);
+        resultadoPanel.setViewportView(resultado);
+
+        ver.setText("Ver solución");
+        ver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                verActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -224,125 +217,127 @@ public class EdicionGrafo extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(tablaAdy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(tablaAdy1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(dibujarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(LineButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(EraseNodo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(CleanButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(resolver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(resultadoPanel, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(dibujarN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(dibujarA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(eraserN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(download, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(ver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(algoritmo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(resultadoText))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(dibujarButton)
+                        .addComponent(dibujarN)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(LineButton)
+                        .addComponent(dibujarA)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(EraseNodo)
+                        .addComponent(eraserN)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CleanButton)
+                        .addComponent(clear)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)
-                        .addGap(10, 10, 10)
-                        .addComponent(resolver)))
+                        .addComponent(download)
+                        .addGap(33, 33, 33)
+                        .addComponent(algoritmo))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
+                .addComponent(resultadoText)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(tablaAdy1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tablaAdy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ver)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelar)
+                        .addGap(0, 18, Short.MAX_VALUE))
+                    .addComponent(resultadoPanel))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void dibujarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dibujarButtonActionPerformed
+    private void dibujarNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dibujarNActionPerformed
         if (makeLine) {
             makeLine = false;
-            LineButton.setSelected(false);
+            dibujarA.setSelected(false);
         } else if (borrar) {
             borrar = false;
-            EraseNodo.setSelected(false);
+            eraserN.setSelected(false);
         } else if (limpiar) {
             limpiar = false;
-            CleanButton.setSelected(false);
+            clear.setSelected(false);
         }
         dibujar = !dibujar;
-    }//GEN-LAST:event_dibujarButtonActionPerformed
+    }//GEN-LAST:event_dibujarNActionPerformed
 
-    private void CleanButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CleanButtonActionPerformed
+    private void clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearActionPerformed
         if (dibujar) {
             dibujar = false;
-            dibujarButton.setSelected(false);
+            dibujarN.setSelected(false);
         } else if (makeLine) {
             makeLine = false;
-            LineButton.setSelected(false);
+            dibujarA.setSelected(false);
         } else if (borrar) {
             borrar = false;
-            EraseNodo.setSelected(false);
+            eraserN.setSelected(false);
         }
         grafo.setNodos(new ArrayList<Nodo>());
         grafo.setAristas(new ArrayList<Arista>());
         limpiar = !limpiar;
         repaint();
-    }//GEN-LAST:event_CleanButtonActionPerformed
+    }//GEN-LAST:event_clearActionPerformed
 
-    private void LineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LineButtonActionPerformed
+    private void dibujarAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dibujarAActionPerformed
         if (grafo.getNodos().isEmpty()) {
             JOptionPane.showMessageDialog(rootPane, "El grafo no tiene nodos.");
-            LineButton.setSelected(false);
+            dibujarA.setSelected(false);
         } else {
             if (dibujar) {
                 dibujar = false;
-                dibujarButton.setSelected(false);
+                dibujarN.setSelected(false);
             } else if (borrar) {
                 borrar = false;
-                EraseNodo.setSelected(false);
+                eraserN.setSelected(false);
             } else if (limpiar) {
                 limpiar = false;
-                CleanButton.setSelected(false);
+                clear.setSelected(false);
             }
             desSeleccionar();
             makeLine = !makeLine;
         }
-    }//GEN-LAST:event_LineButtonActionPerformed
+    }//GEN-LAST:event_dibujarAActionPerformed
 
-    private void EraseNodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EraseNodoActionPerformed
+    private void eraserNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eraserNActionPerformed
         if (grafo.getNodos().isEmpty()) {
             JOptionPane.showMessageDialog(rootPane, "El grafo no tiene nodos.");
-            EraseNodo.setSelected(false);
+            eraserN.setSelected(false);
         } else {
             if (dibujar) {
                 dibujar = false;
-                dibujarButton.setSelected(false);
+                dibujarN.setSelected(false);
             } else if (makeLine) {
                 makeLine = false;
-                LineButton.setSelected(false);
+                dibujarA.setSelected(false);
             } else if (limpiar) {
                 limpiar = false;
-                CleanButton.setSelected(false);
+                clear.setSelected(false);
             }
             desSeleccionar();
             borrar = !borrar;
         }
-    }//GEN-LAST:event_EraseNodoActionPerformed
+    }//GEN-LAST:event_eraserNActionPerformed
 
     private void panelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelMouseClicked
         if (dibujar) {
@@ -439,72 +434,59 @@ public class EdicionGrafo extends javax.swing.JFrame {
         obtenerAdyacentes();
     }//GEN-LAST:event_panelMouseClicked
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void downloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadActionPerformed
         auxiliar = grafo;
         Imagen i = new Imagen();
         i.setTitle("Imagen Descargada");
         i.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         i.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_downloadActionPerformed
 
-    private void resolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resolverActionPerformed
-        obtenerHeuristica();
-        System.out.println(heuristica);
-        String inicial =  JOptionPane.showInputDialog("Nodo Inicial: ");
-        String meta = JOptionPane.showInputDialog("Nodo Meta: ");
-        ArrayList<String> nodos_visitados = new ArrayList<String>();
-        
-        float costo_acumulado = 0;
-        int pos;
-        int bandera;
-        
-        String nodo_actual = inicial;
-        
-        ArrayList<Nodo> nodos = grafo.getNodos();
+    private void algoritmoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algoritmoActionPerformed
+        if (grafo.getNodos().isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane, "Dibuje un grafo");
+        } else {
 
-        //Busqueda
-        while (!nodo_actual.equals(meta)) {
-            Map<String, Float> hijos = new TreeMap<>();
-            System.out.println("Nodo actual: " + nodo_actual);
-            nodos_visitados.add(nodo_actual);
-            bandera = 0;
-            //calculamos el costo del nodo actual, hacia sus hijos
-            for (int i = 0; i < nodos.size(); i++) {
+            dibujarN.setEnabled(false);
+            dibujarA.setEnabled(false);
+            eraserN.setEnabled(false);
+            clear.setEnabled(false);
+            algoritmo.setVisible(false);
 
-                if (nodo_actual.equals(String.valueOf(nodos.get(i).getNum()))) {
-                    Iterator it = nodos.get(i).getAdyacentes().keySet().iterator();
-                    while (it.hasNext()) {
-                        //nombre del nodo adyacente
-                        float cant_hijos;
-                        String key = it.next().toString();
-                        if (nodos_visitados.contains(key) == false) {
-                            cant_hijos = costo_acumulado + nodos.get(i).getAdyacentes().get(key) + heuristica.get(key);
-                            hijos.put(key, cant_hijos);
-                        }
-                    }
-                }
-            }
-            Iterator c = hijos.keySet().iterator();
-            String auxKey = c.next().toString();
-            float auxCost = hijos.get(auxKey);
-            Iterator b = hijos.keySet().iterator();
-            while (b.hasNext()) {
-                String key = b.next().toString();
-                if (hijos.get(key) <= auxCost) {
-                    auxKey = "";
-                    auxKey = key;
-                    auxCost = hijos.get(key);
-                }
-            }
-            costo_acumulado = hijos.get(auxKey) - heuristica.get(auxKey);
-            nodo_actual = auxKey;
-            System.out.println("    Costo: " + (hijos.get(auxKey) - heuristica.get(auxKey)));
+            dibujar = false;
+            makeLine = false;
+            line = false;
+            borrar = false;
+            limpiar = false;
 
+            cancelar.setVisible(true);
+
+            auxiliar = grafo;
+            Solucion solucion = new Solucion();
+            solucion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            solucion.setVisible(true);
         }
-        System.out.println("Costo TOTAL: " + costo_acumulado);
-        nodos_visitados.add(meta);
-        colorearNodos(nodos_visitados);
-    }//GEN-LAST:event_resolverActionPerformed
+    }//GEN-LAST:event_algoritmoActionPerformed
+
+    private void cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarActionPerformed
+
+        dibujarN.setEnabled(true);
+        dibujarA.setEnabled(true);
+        eraserN.setEnabled(true);
+        clear.setEnabled(true);
+        algoritmo.setVisible(true);
+
+        resultado.setText("");
+
+        descolorear();
+
+        ver.setVisible(false);
+        cancelar.setVisible(false);
+    }//GEN-LAST:event_cancelarActionPerformed
+
+    private void verActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verActionPerformed
+        colorearNodos();
+    }//GEN-LAST:event_verActionPerformed
 
     public void desSeleccionar() {
         seleccionados = new ArrayList<>();
@@ -519,32 +501,30 @@ public class EdicionGrafo extends javax.swing.JFrame {
         for (Nodo nodo : grafo.getNodos()) {
             for (Arista a : grafo.getAristas()) {
                 if (a.getNodos().get(0).equals(nodo)) {
-                    adyacentes.put(String.valueOf(a.getNodos().get(1).getNum()), Float.valueOf(a.getTamaño()));
+                    adyacentes.put(String.valueOf(a.getNodos().get(1).getNum()), a.getTamaño());
                 } else if (a.getNodos().get(1).equals(nodo)) {
-                    adyacentes.put(String.valueOf(a.getNodos().get(0).getNum()), Float.valueOf(a.getTamaño()));
+                    adyacentes.put(String.valueOf(a.getNodos().get(0).getNum()), a.getTamaño());
                 }
             }
             nodo.setAdyacentes(adyacentes);
             adyacentes = new TreeMap<>();
         }
     }
-    
-    public void obtenerHeuristica(){
-        //Resolver por medio del algoritmo A*
-        for( Nodo nodo: grafo.getNodos()){
-            String costo = JOptionPane.showInputDialog(rootPane, "Ingrese la heuristica del Nodo " + nodo.getNum() + ":");
-            heuristica.put(String.valueOf(nodo.getNum()), Float.valueOf(costo));
-        }
-        System.out.println(heuristica);
-    }
-    
-    public void colorearNodos(ArrayList<String> visitados){
-        for(String visitado: visitados){
-            for(Nodo nodo: grafo.getNodos()){
-                if(String.valueOf(nodo.getNum()).equals(visitado)){
+
+    private void colorearNodos() {
+        for (String visitado : visitados) {
+            for (Nodo nodo : grafo.getNodos()) {
+                if (String.valueOf(nodo.getNum()).equals(visitado)) {
                     nodo.setColor(Color.RED);
                 }
             }
+        }
+        repaint();
+    }
+
+    private void descolorear() {
+        for (Nodo nodo : grafo.getNodos()) {
+            nodo.setColor(Color.black);
         }
         repaint();
     }
@@ -585,20 +565,21 @@ public class EdicionGrafo extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton CleanButton;
-    private javax.swing.JToggleButton EraseNodo;
-    private javax.swing.JToggleButton LineButton;
-    private javax.swing.JToggleButton dibujarButton;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton algoritmo;
+    public static javax.swing.JButton cancelar;
+    private javax.swing.JButton clear;
+    private javax.swing.JToggleButton dibujarA;
+    private javax.swing.JToggleButton dibujarN;
+    private javax.swing.JButton download;
+    private javax.swing.JToggleButton eraserN;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel panel;
-    private javax.swing.JButton resolver;
-    private javax.swing.JPanel tablaAdy;
-    private javax.swing.JPanel tablaAdy1;
+    public static javax.swing.JTextPane resultado;
+    private javax.swing.JScrollPane resultadoPanel;
+    private javax.swing.JLabel resultadoText;
+    public static javax.swing.JButton ver;
     // End of variables declaration//GEN-END:variables
 }
