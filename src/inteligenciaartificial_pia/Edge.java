@@ -5,11 +5,13 @@
  */
 package inteligenciaartificial_pia;
 
+import java.io.Serializable;
+
 /**
  *
  * @author ASUS
  */
-public class Edge {
+public class Edge implements Serializable{
 
     private final Nodo destination;
     private final float cost;

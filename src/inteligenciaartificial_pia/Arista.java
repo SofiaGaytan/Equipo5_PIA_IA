@@ -7,13 +7,14 @@ package inteligenciaartificial_pia;
 
 import java.awt.Color;
 import java.awt.Shape;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author ASUS
  */
-public class Arista {
+public class Arista implements Serializable{
     Shape arista;
     ArrayList<Nodo> nodos = new ArrayList<>();
     Color color;

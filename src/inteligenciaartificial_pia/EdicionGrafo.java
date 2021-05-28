@@ -10,6 +10,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Ellipse2D;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -88,7 +93,6 @@ public class EdicionGrafo extends javax.swing.JFrame {
         eraserN = new javax.swing.JToggleButton();
         clear = new javax.swing.JButton();
         dibujarA = new javax.swing.JToggleButton();
-        download = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         panel = new javax.swing.JPanel();
         algoritmo = new javax.swing.JButton();
@@ -101,7 +105,12 @@ public class EdicionGrafo extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         goInicio = new javax.swing.JMenuItem();
         exit = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        setInstancia = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        getInstancia = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        ejecutar = new javax.swing.JMenuItem();
         goConfig = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -135,13 +144,6 @@ public class EdicionGrafo extends javax.swing.JFrame {
         dibujarA.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dibujarAActionPerformed(evt);
-            }
-        });
-
-        download.setText("Descargar imagen");
-        download.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                downloadActionPerformed(evt);
             }
         });
 
@@ -183,7 +185,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        algoritmo.setText("Aplicar Algoritmo");
+        algoritmo.setText("Ejecutar algoritmo");
         algoritmo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 algoritmoActionPerformed(evt);
@@ -224,9 +226,45 @@ public class EdicionGrafo extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Configuración");
+        jMenu3.setText("Archivo");
 
-        goConfig.setText("Ir a Configuración");
+        setInstancia.setText("Abrir instancia");
+        setInstancia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setInstanciaActionPerformed(evt);
+            }
+        });
+        jMenu3.add(setInstancia);
+
+        jMenuItem1.setText("Descargar imagen");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem1);
+
+        getInstancia.setText("Descargar instancia");
+        getInstancia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                getInstanciaActionPerformed(evt);
+            }
+        });
+        jMenu3.add(getInstancia);
+
+        jMenuBar1.add(jMenu3);
+
+        jMenu2.setText("Algoritmo");
+
+        ejecutar.setText("Ejecutar");
+        ejecutar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ejecutarActionPerformed(evt);
+            }
+        });
+        jMenu2.add(ejecutar);
+
+        goConfig.setText("Configuración");
         goConfig.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 goConfigActionPerformed(evt);
@@ -255,7 +293,6 @@ public class EdicionGrafo extends javax.swing.JFrame {
                             .addComponent(dibujarA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(eraserN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(download, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(ver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(algoritmo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -275,9 +312,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
                         .addComponent(eraserN)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(clear)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(download)
-                        .addGap(33, 33, 33)
+                        .addGap(32, 32, 32)
                         .addComponent(algoritmo))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
@@ -462,14 +497,6 @@ public class EdicionGrafo extends javax.swing.JFrame {
         obtenerAdyacentes();
     }//GEN-LAST:event_panelMouseClicked
 
-    private void downloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadActionPerformed
-        auxiliar = grafo;
-        Imagen i = new Imagen();
-        i.setTitle("Imagen Descargada");
-        i.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        i.setVisible(true);
-    }//GEN-LAST:event_downloadActionPerformed
-
     private void algoritmoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algoritmoActionPerformed
        if (grafo.getNodos().isEmpty()) {
             JOptionPane.showMessageDialog(rootPane, "Dibuje un grafo");
@@ -530,6 +557,47 @@ public class EdicionGrafo extends javax.swing.JFrame {
         config.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         config.setVisible(true);
     }//GEN-LAST:event_goConfigActionPerformed
+
+    private void ejecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejecutarActionPerformed
+        algoritmoActionPerformed(evt);
+    }//GEN-LAST:event_ejecutarActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        auxiliar = grafo;
+        Imagen i = new Imagen();
+        i.setTitle("Imagen Descargada");
+        i.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        i.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void setInstanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setInstanciaActionPerformed
+        File archivo = new File("C:\\Users\\ASUS\\Desktop\\prueba.dat");
+        try{
+            FileInputStream file = new FileInputStream(archivo);
+            ObjectInputStream leer;
+            while(file.available()>0){
+                leer = new ObjectInputStream(file);
+                grafo = (Grafo)leer.readObject();
+                repaint();
+            }
+            file.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_setInstanciaActionPerformed
+
+    private void getInstanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getInstanciaActionPerformed
+        File archivo = new File("C:\\Users\\ASUS\\Desktop\\prueba.dat");
+        try{
+            FileOutputStream file = new FileOutputStream(archivo);
+            ObjectOutputStream escribir = new ObjectOutputStream(file);
+            escribir.writeObject(grafo);
+            escribir.close();
+            file.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_getInstanciaActionPerformed
 
     public void desSeleccionar() {
         seleccionados = new ArrayList<>();
@@ -616,19 +684,23 @@ public class EdicionGrafo extends javax.swing.JFrame {
     private javax.swing.JButton clear;
     private javax.swing.JToggleButton dibujarA;
     private javax.swing.JToggleButton dibujarN;
-    private javax.swing.JButton download;
+    private javax.swing.JMenuItem ejecutar;
     private javax.swing.JToggleButton eraserN;
     private javax.swing.JMenuItem exit;
+    private javax.swing.JMenuItem getInstancia;
     private javax.swing.JMenuItem goConfig;
     private javax.swing.JMenuItem goInicio;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel panel;
     public static javax.swing.JTextPane resultado;
     private javax.swing.JScrollPane resultadoPanel;
     private javax.swing.JLabel resultadoText;
+    private javax.swing.JMenuItem setInstancia;
     public static javax.swing.JButton ver;
     // End of variables declaration//GEN-END:variables
 }

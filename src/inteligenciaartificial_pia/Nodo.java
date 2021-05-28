@@ -7,6 +7,7 @@ package inteligenciaartificial_pia;
 
 import java.awt.Color;
 import java.awt.Shape;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,7 +16,7 @@ import java.util.TreeMap;
  *
  * @author ASUS
  */
-public class Nodo {
+public class Nodo implements Serializable{
 
     private Shape nodo;
     private Color color;

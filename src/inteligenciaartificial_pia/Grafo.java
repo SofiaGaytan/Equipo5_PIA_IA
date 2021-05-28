@@ -10,12 +10,13 @@ import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.awt.geom.Ellipse2D;
+import java.io.Serializable;
 
 /**
  *
  * @author ASUS
  */
-public class Grafo {
+public class Grafo implements Serializable{
 
     ArrayList<Nodo> nodos = new ArrayList<>();
     ArrayList<Arista> aristas = new ArrayList<>();
