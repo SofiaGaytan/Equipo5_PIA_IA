@@ -99,7 +99,10 @@ public class EdicionGrafo extends javax.swing.JFrame {
         ver = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        goInicio = new javax.swing.JMenuItem();
+        exit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        goConfig = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -206,10 +209,31 @@ public class EdicionGrafo extends javax.swing.JFrame {
             }
         });
 
-        jMenu1.setText("File");
+        jMenu1.setText("Inicio");
+
+        goInicio.setText("Ir al Inicio");
+        jMenu1.add(goInicio);
+
+        exit.setText("Salir");
+        exit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitActionPerformed(evt);
+            }
+        });
+        jMenu1.add(exit);
+
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Edit");
+        jMenu2.setText("Configuración");
+
+        goConfig.setText("Ir a Configuración");
+        goConfig.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                goConfigActionPerformed(evt);
+            }
+        });
+        jMenu2.add(goConfig);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -451,6 +475,11 @@ public class EdicionGrafo extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Dibuje un grafo");
         } else {
 
+            dibujarN.setSelected(false);
+            dibujarA.setSelected(false);
+            eraserN.setSelected(false);
+            clear.setSelected(false);
+            
             dibujarN.setEnabled(false);
             dibujarA.setEnabled(false);
             eraserN.setEnabled(false);
@@ -490,6 +519,17 @@ public class EdicionGrafo extends javax.swing.JFrame {
     private void verActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verActionPerformed
         colorearNodos();
     }//GEN-LAST:event_verActionPerformed
+
+    private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
+        dispose();
+        System.out.println("Profesor, ponganos 100 :)");
+    }//GEN-LAST:event_exitActionPerformed
+
+    private void goConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goConfigActionPerformed
+        Configuracion config = new Configuracion(algoritmo_informado);
+        config.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        config.setVisible(true);
+    }//GEN-LAST:event_goConfigActionPerformed
 
     public void desSeleccionar() {
         seleccionados = new ArrayList<>();
@@ -578,6 +618,9 @@ public class EdicionGrafo extends javax.swing.JFrame {
     private javax.swing.JToggleButton dibujarN;
     private javax.swing.JButton download;
     private javax.swing.JToggleButton eraserN;
+    private javax.swing.JMenuItem exit;
+    private javax.swing.JMenuItem goConfig;
+    private javax.swing.JMenuItem goInicio;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
