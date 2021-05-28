@@ -26,9 +26,12 @@ import javax.swing.text.StyledDocument;
  * @author ASUS
  */
 public class Solucion extends javax.swing.JFrame {
+
     ArrayList<JSpinner> heuristicos = new ArrayList();
     Map<String, Float> heuristica = new TreeMap<>();
-    Grafo grafo =  EdicionGrafo.auxiliar;
+    Grafo grafo = EdicionGrafo.auxiliar;
+    boolean algoritmo = EdicionGrafo.algoritmo_informado;
+
     /**
      * Creates new form Solucion
      */
@@ -256,7 +259,15 @@ public class Solucion extends javax.swing.JFrame {
     }//GEN-LAST:event_VolverActionPerformed
 
     private void resolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resolverActionPerformed
-        algoritmoA(nodoInicial.getValue().toString(), nodoMeta.getValue().toString());
+        Nodo inicial, meta;
+        inicial = obtenerNodo(Integer.parseInt(nodoInicial.getValue().toString()));
+        meta = obtenerNodo(Integer.parseInt(nodoMeta.getValue().toString()));
+        if (algoritmo) {
+            algoritmoA(nodoInicial.getValue().toString(), nodoMeta.getValue().toString());
+        } else {
+            var solution = new UniformCost().search(inicial, meta);
+            printSolution(solution);
+        }
         EdicionGrafo.ver.setVisible(true);
         dispose();
     }//GEN-LAST:event_resolverActionPerformed
@@ -277,12 +288,14 @@ public class Solucion extends javax.swing.JFrame {
 
         ArrayList<Nodo> nodos = grafo.getNodos();
         ArrayList<String> nodos_visitados = new ArrayList<>();
+        ArrayList<String> recorrido = new ArrayList<>();
 
         //Busqueda
         while (!nodo_actual.equals(meta)) {
             Map<String, Float> hijos = new TreeMap<>();
             System.out.println("Nodo actual: " + nodo_actual);
             nodos_visitados.add(nodo_actual);
+            recorrido.add(nodo_actual);
             bandera = 0;
             //calculamos el costo del nodo actual, hacia sus hijos
             for (int i = 0; i < nodos.size(); i++) {
@@ -295,28 +308,33 @@ public class Solucion extends javax.swing.JFrame {
                         String key = it.next().toString();
                         if (nodos_visitados.contains(key) == false) {
                             cant_hijos = costo_acumulado + nodos.get(i).getAdyacentes().get(key) + heuristica.get(key);
-                            System.out.println("AQUIIII " + nodos.get(i).getAdyacentes().get(key));
                             hijos.put(key, cant_hijos);
                         }
                     }
                 }
             }
-            Iterator c = hijos.keySet().iterator();
-            String auxKey = c.next().toString();
-            float auxCost = hijos.get(auxKey);
-            Iterator b = hijos.keySet().iterator();
-            while (b.hasNext()) {
-                String key = b.next().toString();
-                if (hijos.get(key) <= auxCost) {
-                    auxKey = "";
-                    auxKey = key;
-                    auxCost = hijos.get(key);
+            if (hijos.isEmpty()) {
+                nodo_actual = inicial;
+                costo_acumulado = 0;
+                recorrido = new ArrayList<>();
+                recorrido.add(nodo_actual);
+            } else {
+                Iterator c = hijos.keySet().iterator();
+                String auxKey = c.next().toString();
+                float auxCost = hijos.get(auxKey);
+                Iterator b = hijos.keySet().iterator();
+                while (b.hasNext()) {
+                    String key = b.next().toString();
+                    if (hijos.get(key) <= auxCost) {
+                        auxKey = "";
+                        auxKey = key;
+                        auxCost = hijos.get(key);
+                    }
                 }
+                costo_acumulado = hijos.get(auxKey) - heuristica.get(auxKey);
+                nodo_actual = auxKey;
+                System.out.println("    Costo: " + (hijos.get(auxKey) - heuristica.get(auxKey)));
             }
-            costo_acumulado = hijos.get(auxKey) - heuristica.get(auxKey);
-            nodo_actual = auxKey;
-            System.out.println("    Costo: " + (hijos.get(auxKey) - heuristica.get(auxKey)));
-
         }
         StyleConstants.setForeground(estilo, Color.black);
         try {
@@ -332,7 +350,8 @@ public class Solucion extends javax.swing.JFrame {
 
         System.out.println("Costo TOTAL: " + costo_acumulado);
         nodos_visitados.add(meta);
-        EdicionGrafo.visitados = nodos_visitados;
+        recorrido.add(meta);
+        EdicionGrafo.visitados = recorrido;
     }
 
     public void obtenerHeuristica() {
@@ -342,7 +361,40 @@ public class Solucion extends javax.swing.JFrame {
         }
         System.out.println(heuristica);
     }
-    
+
+    private static void printSolution(Priority solution) {
+        StyledDocument documento = EdicionGrafo.resultado.getStyledDocument();
+        Style estilo = EdicionGrafo.resultado.addStyle("Estilo", null);
+
+        System.out.println("Solution");
+        System.out.println("Cost: " + solution.getCost());
+        try {
+            documento.insertString(documento.getLength(), "Costo Total: ", estilo);
+        } catch (BadLocationException e) {
+        }
+
+        StyleConstants.setForeground(estilo, Color.red);
+        try {
+            documento.insertString(documento.getLength(), String.valueOf(solution.getCost()), estilo);
+        } catch (BadLocationException e) {
+        }
+        System.out.print("Path: ");
+        ArrayList<String> nodos_visitados = new ArrayList<>();
+        for (Nodo node : solution.getPath()) {
+            nodos_visitados.add(String.valueOf(node.getNum()));
+        }
+        EdicionGrafo.visitados = nodos_visitados;
+    }
+
+    public Nodo obtenerNodo(int aux) {
+        for (Nodo nodo : grafo.getNodos()) {
+            if (nodo.getNum() == aux) {
+                return nodo;
+            }
+        }
+        return null;
+    }
+
     /**
      * @param args the command line arguments
      */

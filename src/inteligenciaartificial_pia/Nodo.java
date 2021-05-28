@@ -7,6 +7,7 @@ package inteligenciaartificial_pia;
 
 import java.awt.Color;
 import java.awt.Shape;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -15,22 +16,24 @@ import java.util.TreeMap;
  * @author ASUS
  */
 public class Nodo {
+
     private Shape nodo;
     private Color color;
     private int num;
     private Map<String, Float> adyacentes = new TreeMap<>();
-    
-    public Nodo(Shape nodo, Color color, int num){
+    private  ArrayList<Edge> edges = new ArrayList<>();
+
+    public Nodo(Shape nodo, Color color, int num) {
         super();
         this.nodo = nodo;
         this.color = color;
-        this.num =  num;
+        this.num = num;
     }
-    
-    public Nodo(){
-        
+
+    public Nodo() {
+
     }
-    
+
     public Shape getNodo() {
         return nodo;
     }
@@ -62,4 +65,17 @@ public class Nodo {
     public void setAdyacentes(Map<String, Float> adyacentes) {
         this.adyacentes = adyacentes;
     }
+
+    public void addEdge(Nodo destination, float cost) {
+        this.edges.add(new Edge(destination, cost));
+    }
+
+    public ArrayList<Edge> getEdges() {
+        return edges;
+    }
+    
+    public void setEdges(ArrayList<Edge> edges) {
+        this.edges = edges;
+    }
+
 }

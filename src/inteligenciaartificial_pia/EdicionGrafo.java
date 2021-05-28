@@ -31,11 +31,15 @@ public class EdicionGrafo extends javax.swing.JFrame {
     ArrayList<Nodo> borrados = new ArrayList<>();
     Map<String, Float> adyacentes = new TreeMap<>();
     Nodo seleccionado;
+    
     boolean dibujar = false;
     boolean makeLine = false;
     boolean line = false;
     boolean borrar = false;
     boolean limpiar = false;
+    
+    public static boolean algoritmo_informado = true; //False para algoritmo no informado (Algoritmo de costo uniforme), True para algortimo informado (Algoritmo A*).
+    
     int count = 0;
 
     /**
@@ -443,7 +447,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
     }//GEN-LAST:event_downloadActionPerformed
 
     private void algoritmoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algoritmoActionPerformed
-        if (grafo.getNodos().isEmpty()) {
+       if (grafo.getNodos().isEmpty()) {
             JOptionPane.showMessageDialog(rootPane, "Dibuje un grafo");
         } else {
 
@@ -469,7 +473,6 @@ public class EdicionGrafo extends javax.swing.JFrame {
     }//GEN-LAST:event_algoritmoActionPerformed
 
     private void cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarActionPerformed
-
         dibujarN.setEnabled(true);
         dibujarA.setEnabled(true);
         eraserN.setEnabled(true);
@@ -499,18 +502,21 @@ public class EdicionGrafo extends javax.swing.JFrame {
 
     public void obtenerAdyacentes() {
         for (Nodo nodo : grafo.getNodos()) {
+            nodo.setEdges(new ArrayList<>());
             for (Arista a : grafo.getAristas()) {
                 if (a.getNodos().get(0).equals(nodo)) {
                     adyacentes.put(String.valueOf(a.getNodos().get(1).getNum()), a.getTamaño());
+                    nodo.addEdge(a.getNodos().get(1), a.getTamaño());
                 } else if (a.getNodos().get(1).equals(nodo)) {
                     adyacentes.put(String.valueOf(a.getNodos().get(0).getNum()), a.getTamaño());
+                    nodo.addEdge(a.getNodos().get(0), a.getTamaño());
                 }
             }
             nodo.setAdyacentes(adyacentes);
             adyacentes = new TreeMap<>();
         }
     }
-
+    
     private void colorearNodos() {
         for (String visitado : visitados) {
             for (Nodo nodo : grafo.getNodos()) {
@@ -528,7 +534,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
         }
         repaint();
     }
-
+    
     /**
      * @param args the command line arguments
      */
