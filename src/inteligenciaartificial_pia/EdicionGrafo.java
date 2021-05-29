@@ -18,6 +18,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
@@ -36,15 +37,18 @@ public class EdicionGrafo extends javax.swing.JFrame {
     ArrayList<Nodo> borrados = new ArrayList<>();
     Map<String, Float> adyacentes = new TreeMap<>();
     Nodo seleccionado;
-    
+
+    JFileChooser seleccionar = new JFileChooser();
+    File archivo;
+
     boolean dibujar = false;
     boolean makeLine = false;
     boolean line = false;
     boolean borrar = false;
     boolean limpiar = false;
-    
+
     public static boolean algoritmo_informado = true; //False para algoritmo no informado (Algoritmo de costo uniforme), True para algortimo informado (Algoritmo A*).
-    
+
     int count = 0;
 
     /**
@@ -474,7 +478,10 @@ public class EdicionGrafo extends javax.swing.JFrame {
             } else {
                 String tam = "";
                 while (tam.isEmpty()) {
-                    tam = JOptionPane.showInputDialog("Tamaño de la Arista:");
+                    tam = JOptionPane.showInputDialog("Nombre del archivo: ");
+                    if (tam == null) {
+                        break;
+                    }
                 }
                 if (tam != null) {
                     if (seleccionados.get(0) == seleccionados.get(1)) {
@@ -498,7 +505,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
     }//GEN-LAST:event_panelMouseClicked
 
     private void algoritmoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algoritmoActionPerformed
-       if (grafo.getNodos().isEmpty()) {
+        if (grafo.getNodos().isEmpty()) {
             JOptionPane.showMessageDialog(rootPane, "Dibuje un grafo");
         } else {
 
@@ -506,7 +513,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
             dibujarA.setSelected(false);
             eraserN.setSelected(false);
             clear.setSelected(false);
-            
+
             dibujarN.setEnabled(false);
             dibujarA.setEnabled(false);
             eraserN.setEnabled(false);
@@ -571,31 +578,72 @@ public class EdicionGrafo extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void setInstanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setInstanciaActionPerformed
-        File archivo = new File("C:\\Users\\ASUS\\Desktop\\prueba.dat");
-        try{
-            FileInputStream file = new FileInputStream(archivo);
-            ObjectInputStream leer;
-            while(file.available()>0){
-                leer = new ObjectInputStream(file);
-                grafo = (Grafo)leer.readObject();
-                repaint();
+        if (seleccionar.showDialog(null, "Abrir") == JFileChooser.APPROVE_OPTION) {
+            archivo = seleccionar.getSelectedFile();
+            switch (JOptionPane.showConfirmDialog(null, "¿Desea abrir el documento \"" + archivo.getName() + "\"?")) {
+                case 0:
+                    if (archivo.canRead()) {
+                        if (archivo.getName().endsWith("dat")) {
+                            try {
+                                FileInputStream file = new FileInputStream(archivo);
+                                ObjectInputStream leer;
+                                while (file.available() > 0) {
+                                    leer = new ObjectInputStream(file);
+                                    grafo = (Grafo) leer.readObject();
+                                    repaint();
+                                }
+                                file.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "El archivo no es compatible");
+                        }
+                    }
+                    break;
+                case 1:
+                    setInstanciaActionPerformed(evt);
+                    break;
+                case 2:
+                    break;
             }
-            file.close();
-        }catch(Exception e){
-            e.printStackTrace();
         }
+
     }//GEN-LAST:event_setInstanciaActionPerformed
 
     private void getInstanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getInstanciaActionPerformed
-        File archivo = new File("C:\\Users\\ASUS\\Desktop\\prueba.dat");
-        try{
-            FileOutputStream file = new FileOutputStream(archivo);
-            ObjectOutputStream escribir = new ObjectOutputStream(file);
-            escribir.writeObject(grafo);
-            escribir.close();
-            file.close();
-        }catch(Exception e){
-            e.printStackTrace();
+        boolean cancelado = false;
+        seleccionar.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if (seleccionar.showDialog(null, "Guardar") == JFileChooser.APPROVE_OPTION) {
+            String nombre = "";
+            while (nombre.isEmpty()) {
+                nombre = JOptionPane.showInputDialog("Nombre del archivo: ");
+                if (nombre == null) {
+                    cancelado = true;
+                    break;
+                }
+            }
+            if(!cancelado){
+            archivo = new File(seleccionar.getSelectedFile() + "\\" + nombre + ".dat");
+            switch (JOptionPane.showConfirmDialog(null, "¿Desea crear el archivo \"" + archivo.getName() + "\"?")) {
+                case 0:
+                    try {
+                    FileOutputStream file = new FileOutputStream(archivo);
+                    ObjectOutputStream escribir = new ObjectOutputStream(file);
+                    escribir.writeObject(grafo);
+                    escribir.close();
+                    file.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+                case 1:
+                    getInstanciaActionPerformed(evt);
+                    break;
+                case 2:
+                    break;
+            }
+            }
         }
     }//GEN-LAST:event_getInstanciaActionPerformed
 
@@ -624,7 +672,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
             adyacentes = new TreeMap<>();
         }
     }
-    
+
     private void colorearNodos() {
         for (String visitado : visitados) {
             for (Nodo nodo : grafo.getNodos()) {
@@ -642,7 +690,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
         }
         repaint();
     }
-    
+
     /**
      * @param args the command line arguments
      */
