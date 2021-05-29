@@ -40,7 +40,13 @@ public class Solucion extends javax.swing.JFrame {
         hPanel.setVisible(false);
         hText.setVisible(false);
         Volver.setVisible(false);
+        if(algoritmo){
         resolver.setVisible(false);
+        }else{
+            resolver.setAlignmentX(Aceptar.getAlignmentX());
+            resolver.setAlignmentY(Aceptar.getAlignmentY());
+            Aceptar.setVisible(false);
+        }
         this.setSize(this.getWidth(), 300);
     }
 
@@ -99,7 +105,7 @@ public class Solucion extends javax.swing.JFrame {
                 .addGroup(nodosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(nodoInicial)
                     .addComponent(nodoMeta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(206, Short.MAX_VALUE))
         );
         nodosPanelLayout.setVerticalGroup(
             nodosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,26 +160,29 @@ public class Solucion extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nodosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nodosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hPanel)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(nodoText)
+                                    .addComponent(hText))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nodoText)
-                            .addComponent(hText))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(hPanel))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(206, 206, 206)
+                                .addComponent(Aceptar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(156, 156, 156)
+                                .addComponent(Volver)
+                                .addGap(32, 32, 32)
+                                .addComponent(resolver)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(182, Short.MAX_VALUE)
-                .addComponent(Volver)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(resolver)
-                .addGap(162, 162, 162))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(206, 206, 206)
-                .addComponent(Aceptar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -203,12 +212,15 @@ public class Solucion extends javax.swing.JFrame {
     private void AceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AceptarActionPerformed
         nodosPanel.setVisible(false);
         nodoText.setVisible(false);
+        
+        
+        if(algoritmo){
         Aceptar.setVisible(false);
-
         hPanel.setVisible(true);
         hText.setVisible(true);
         Volver.setVisible(true);
         resolver.setVisible(true);
+        }
 
         GridBagLayout modeloL = new GridBagLayout();
         GridBagConstraints espacio = new GridBagConstraints();

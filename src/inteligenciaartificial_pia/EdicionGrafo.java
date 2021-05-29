@@ -111,7 +111,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
         exit = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         setInstancia = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        getImage = new javax.swing.JMenuItem();
         getInstancia = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         ejecutar = new javax.swing.JMenuItem();
@@ -240,13 +240,13 @@ public class EdicionGrafo extends javax.swing.JFrame {
         });
         jMenu3.add(setInstancia);
 
-        jMenuItem1.setText("Descargar imagen");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        getImage.setText("Descargar imagen");
+        getImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                getImageActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem1);
+        jMenu3.add(getImage);
 
         getInstancia.setText("Descargar instancia");
         getInstancia.addActionListener(new java.awt.event.ActionListener() {
@@ -292,16 +292,16 @@ public class EdicionGrafo extends javax.swing.JFrame {
                             .addComponent(resultadoPanel, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(dibujarN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(dibujarA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(eraserN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(ver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(algoritmo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(algoritmo, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                            .addComponent(ver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(resultadoText))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -319,7 +319,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
                         .addGap(32, 32, 32)
                         .addComponent(algoritmo))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(resultadoText)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -327,7 +327,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
                         .addComponent(ver)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelar)
-                        .addGap(0, 18, Short.MAX_VALUE))
+                        .addGap(0, 12, Short.MAX_VALUE))
                     .addComponent(resultadoPanel))
                 .addContainerGap())
         );
@@ -478,7 +478,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
             } else {
                 String tam = "";
                 while (tam.isEmpty()) {
-                    tam = JOptionPane.showInputDialog("Nombre del archivo: ");
+                    tam = JOptionPane.showInputDialog("Tamaño de la arista: ");
                     if (tam == null) {
                         break;
                     }
@@ -525,6 +525,9 @@ public class EdicionGrafo extends javax.swing.JFrame {
             line = false;
             borrar = false;
             limpiar = false;
+            
+            setInstancia.setEnabled(false);
+            getInstancia.setEnabled(false);
 
             cancelar.setVisible(true);
 
@@ -541,6 +544,9 @@ public class EdicionGrafo extends javax.swing.JFrame {
         eraserN.setEnabled(true);
         clear.setEnabled(true);
         algoritmo.setVisible(true);
+        
+        setInstancia.setEnabled(true);
+            getInstancia.setEnabled(true);
 
         resultado.setText("");
 
@@ -551,7 +557,13 @@ public class EdicionGrafo extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelarActionPerformed
 
     private void verActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verActionPerformed
-        colorearNodos();
+        if(ver.getText().equals("Ver solución")){
+            colorearNodos();
+            ver.setText("Ocultar solución");
+        }else{
+            descolorear();
+            ver.setText("Ver solución");
+        }
     }//GEN-LAST:event_verActionPerformed
 
     private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
@@ -569,15 +581,16 @@ public class EdicionGrafo extends javax.swing.JFrame {
         algoritmoActionPerformed(evt);
     }//GEN-LAST:event_ejecutarActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void getImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getImageActionPerformed
         auxiliar = grafo;
         Imagen i = new Imagen();
-        i.setTitle("Imagen Descargada");
+        i.setTitle("Imagen");
         i.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         i.setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_getImageActionPerformed
 
     private void setInstanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setInstanciaActionPerformed
+        seleccionar.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         if (seleccionar.showDialog(null, "Abrir") == JFileChooser.APPROVE_OPTION) {
             archivo = seleccionar.getSelectedFile();
             switch (JOptionPane.showConfirmDialog(null, "¿Desea abrir el documento \"" + archivo.getName() + "\"?")) {
@@ -590,7 +603,6 @@ public class EdicionGrafo extends javax.swing.JFrame {
                                 while (file.available() > 0) {
                                     leer = new ObjectInputStream(file);
                                     grafo = (Grafo) leer.readObject();
-                                    repaint();
                                 }
                                 file.close();
                             } catch (Exception e) {
@@ -674,6 +686,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
     }
 
     private void colorearNodos() {
+        descolorear();
         for (String visitado : visitados) {
             for (Nodo nodo : grafo.getNodos()) {
                 if (String.valueOf(nodo.getNum()).equals(visitado)) {
@@ -735,6 +748,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
     private javax.swing.JMenuItem ejecutar;
     private javax.swing.JToggleButton eraserN;
     private javax.swing.JMenuItem exit;
+    private javax.swing.JMenuItem getImage;
     private javax.swing.JMenuItem getInstancia;
     private javax.swing.JMenuItem goConfig;
     private javax.swing.JMenuItem goInicio;
@@ -742,7 +756,6 @@ public class EdicionGrafo extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel panel;
     public static javax.swing.JTextPane resultado;

@@ -10,7 +10,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,6 +23,8 @@ import javax.imageio.ImageIO;
 public final class Imagen extends javax.swing.JFrame {
 
     Grafo grafo = EdicionGrafo.auxiliar;
+    JFileChooser seleccionar = new JFileChooser();
+    File archivo;
 
     /**
      * Creates new form Imagen
@@ -47,17 +53,51 @@ public final class Imagen extends javax.swing.JFrame {
 
         g2.dispose();
     }
-    
-    public void createImage(){
+
+    public void createImage() {
         int w = panel.getSize().width;
         int h = panel.getSize().height;
         BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics g = bi.createGraphics();
         this.paint(g);
         g.dispose();
-        try {
-            ImageIO.write(bi, "png", new File("C:\\Users\\ASUS\\Desktop\\imagen.png"));
-        } catch (Exception e) {
+        boolean cancelado = false;
+        boolean aceptado = false;
+        seleccionar.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if (seleccionar.showDialog(null, "Guardar") == JFileChooser.APPROVE_OPTION) {
+            while (!aceptado) {
+                String nombre = "";
+                while (nombre.isEmpty()) {
+                    nombre = JOptionPane.showInputDialog("Nombre del archivo: ");
+                    if (nombre == null) {
+                        cancelado = true;
+                        JOptionPane.showMessageDialog(rootPane, "La imagen no se guardara.");
+                        break;
+                    }
+                }
+                if (!cancelado) {
+
+                    archivo = new File(seleccionar.getSelectedFile() + "\\" + nombre + ".png");
+                    switch (JOptionPane.showConfirmDialog(null, "¿Desea crear la imagen \"" + archivo.getName() + "\"?")) {
+                        case 0:
+                    try {
+                            ImageIO.write(bi, "png", archivo);
+                        } catch (Exception e) {
+                        }
+                        aceptado = true;
+                        break;
+                        case 1:
+                            aceptado = false;
+                            break;
+                        case 2:
+                            aceptado = true;
+                            JOptionPane.showMessageDialog(rootPane, "La imagen no se guardara.");
+                            break;
+                    }
+                }
+            }
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "La imagen no se guardara.");
         }
     }
 
