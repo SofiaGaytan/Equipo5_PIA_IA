@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class UniformCost {
 
     public Priority search(Nodo start, Nodo meta) {
+        
         ArrayList<Priority> priorityQueue = new ArrayList<>();
 
         priorityQueue.add(new Priority(start, 0f, new ArrayList<>(), new ArrayList<>()));
@@ -27,6 +28,7 @@ public class UniformCost {
 
             expandChildNodes(priorityQueue, minPriority);
             priorityQueue.remove(minPriority);
+            
         }
         return null;
     }

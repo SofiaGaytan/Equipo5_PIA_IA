@@ -25,21 +25,23 @@ import javax.swing.text.StyledDocument;
  *
  * @author ASUS
  */
-public class Solucion extends javax.swing.JFrame {
+public class Experimentacion extends javax.swing.JFrame {
 
     StyledDocument documento = EdicionGrafo.resultado.getStyledDocument();
     Style estilo = EdicionGrafo.resultado.addStyle("Estilo", null);
     ArrayList<JSpinner> heuristicos = new ArrayList();
+    ArrayList<Experimento> experimentos = new ArrayList();
     Map<String, Float> heuristica = new TreeMap<>();
     Grafo grafo = EdicionGrafo.auxiliar;
     boolean algoritmo = EdicionGrafo.algoritmo_informado;
+    boolean respuesta;
     long inicio, fin;
     long tiempo;
 
     /**
      * Creates new form Solucion
      */
-    public Solucion() {
+    public Experimentacion() {
         initComponents();
         SpinnerNumberModel modeloInicial = new SpinnerNumberModel(0, 0, grafo.getNodos().size() - 1, 1);
         nodoInicial.setModel(modeloInicial);
@@ -155,7 +157,7 @@ public class Solucion extends javax.swing.JFrame {
             }
         });
 
-        resolver.setText("Resolver");
+        resolver.setText("Experimentar");
         resolver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resolverActionPerformed(evt);
@@ -279,23 +281,37 @@ public class Solucion extends javax.swing.JFrame {
 
     private void resolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resolverActionPerformed
         Nodo inicial, meta;
-        imprimirDatos();
         inicial = obtenerNodo(Integer.parseInt(nodoInicial.getValue().toString()));
         meta = obtenerNodo(Integer.parseInt(nodoMeta.getValue().toString()));
         Priority solution;
         if (algoritmo) {
             obtenerHeuristica();
-            inicio = System.nanoTime();
-            solution = algoritmoA(nodoInicial.getValue().toString(), nodoMeta.getValue().toString());
-            fin = System.nanoTime();
+            for (int i = 0; i < 100; i++) {
+                inicio = System.nanoTime();
+                solution = algoritmoA(nodoInicial.getValue().toString(), nodoMeta.getValue().toString());
+                fin = System.nanoTime();
+                tiempo = fin - inicio;
+                experimentos.add(new Experimento(experimentos.size(), tiempo));
+            }
         } else {
-            inicio = System.currentTimeMillis();
-            solution = new UniformCost().search(inicial, meta);
-            fin = System.currentTimeMillis();
+            for (int i = 0; i < 100; i++) {
+                inicio = System.currentTimeMillis();
+                solution = new UniformCost().search(inicial, meta);
+                fin = System.currentTimeMillis();
+                tiempo = fin - inicio;
+                experimentos.add(new Experimento(experimentos.size(), tiempo));
+            }
         }
-            printSolution(solution);
-            EdicionGrafo.ver.setVisible(true);
-        
+        StyleConstants.setForeground(estilo, Color.blue);
+        try {
+            documento.insertString(documento.getLength(), "Promedio de Tiempo Computacional: ", estilo);
+        } catch (BadLocationException e) {
+        }
+        StyleConstants.setForeground(estilo, Color.black);
+        try {
+            documento.insertString(documento.getLength(), String.valueOf(Promedio()) + " nanosegundos", estilo);
+        } catch (BadLocationException e) {
+        }
         dispose();
     }//GEN-LAST:event_resolverActionPerformed
 
@@ -306,6 +322,8 @@ public class Solucion extends javax.swing.JFrame {
         float costo_acumulado = 0;
         int pos;
         int bandera;
+
+        int aux = 0;
 
         String nodo_actual = inicial;
 
@@ -367,74 +385,20 @@ public class Solucion extends javax.swing.JFrame {
     }
 
     public void obtenerHeuristica() {
-                try {
-            documento.insertString(documento.getLength(), "\n", estilo);
-        } catch (BadLocationException e) {
-        }
         heuristica = new TreeMap<>();
         for (JSpinner h : heuristicos) {
             heuristica.put(h.getName(), Float.valueOf(h.getValue().toString()));
-            try {
-                documento.insertString(documento.getLength(), "\nh(" + h.getName() + "): " + h.getValue().toString(), estilo);
-            } catch (BadLocationException e) {
-            }
         }
         //System.out.println(heuristica);
     }
-
-    public void imprimirDatos() {
-        StyleConstants.setForeground(estilo, Color.gray);
-        try {
-            documento.insertString(documento.getLength(), "Nodo inicial: " + nodoInicial.getValue().toString() + "\nNodo meta: " + nodoMeta.getValue().toString(), estilo);
-        } catch (BadLocationException e) {
+    
+    public double Promedio() {
+        long sumatoria = 0;
+        for (Experimento experimento : experimentos) {
+            sumatoria += experimento.getTiempo();
         }
-    }
-
-    private void printSolution(Priority solution) {
-        //System.out.println("Solution");
-        //System.out.println("Cost: " + solution.getCost());
-
-        StyleConstants.setForeground(estilo, Color.red);
-        try {
-            documento.insertString(documento.getLength(), "\n\nCosto Total: ", estilo);
-        } catch (BadLocationException e) {
-        }
-
-        StyleConstants.setForeground(estilo, Color.black);
-        try {
-            documento.insertString(documento.getLength(), String.valueOf(solution.getCost()), estilo);
-        } catch (BadLocationException e) {
-        }
-
-        ArrayList<String> recorrido = new ArrayList<>();
-
-        if (!algoritmo) {
-            for (Nodo node : solution.getPath()) {
-                recorrido.add(String.valueOf(node.getNum()));
-            }
-        } else {
-            recorrido = solution.getRecorrido();
-        }
-        EdicionGrafo.visitados = recorrido;
-
-        tiempo = fin - inicio;
-        StyleConstants.setForeground(estilo, Color.blue);
-        try {
-            documento.insertString(documento.getLength(), "\n\nTiempo: ", estilo);
-        } catch (BadLocationException e) {
-        }
-
-        StyleConstants.setForeground(estilo, Color.black);
-        try {
-            documento.insertString(documento.getLength(), String.valueOf(tiempo) + " nanosegundos", estilo);
-        } catch (BadLocationException e) {
-        }
-
-        StyleConstants.setForeground(estilo, Color.gray);
-        try {
-            documento.insertString(documento.getLength(), "\nTiempo de Inicio: " + inicio + "\nTiempo de Fin: " + fin, estilo);
-        } catch (BadLocationException e) {
-        }
+        System.out.println(experimentos.size());
+        return (double) sumatoria / 100;
     }
 
     public Nodo obtenerNodo(int aux) {
@@ -463,20 +427,21 @@ public class Solucion extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Solucion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Experimentacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Solucion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Experimentacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Solucion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Experimentacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Solucion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Experimentacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Solucion().setVisible(true);
+                new Experimentacion().setVisible(true);
             }
         });
     }

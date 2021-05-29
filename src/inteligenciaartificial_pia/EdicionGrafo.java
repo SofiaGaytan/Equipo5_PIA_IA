@@ -118,6 +118,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         ejecutar = new javax.swing.JMenuItem();
         goConfig = new javax.swing.JMenuItem();
+        experimentar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -297,6 +298,14 @@ public class EdicionGrafo extends javax.swing.JFrame {
             }
         });
         jMenu2.add(goConfig);
+
+        experimentar.setText("Experimentación");
+        experimentar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                experimentarActionPerformed(evt);
+            }
+        });
+        jMenu2.add(experimentar);
 
         jMenuBar1.add(jMenu2);
 
@@ -587,6 +596,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
             getInstancia.setEnabled(false);
             goConfig.setEnabled(false);
             ejecutar.setEnabled(false);
+            experimentar.setEnabled(false);
 
             cancelar.setVisible(true);
 
@@ -610,12 +620,14 @@ public class EdicionGrafo extends javax.swing.JFrame {
         getInstancia.setEnabled(true);
         goConfig.setEnabled(true);
         ejecutar.setEnabled(true);
+        experimentar.setEnabled(true);
 
         resultado.setText("");
 
         descolorear();
 
         ver.setVisible(false);
+        ver.setText("Ver solución");
         cancelar.setVisible(false);
     }//GEN-LAST:event_cancelarActionPerformed
 
@@ -663,7 +675,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
             switch (JOptionPane.showConfirmDialog(null, "¿Desea abrir el documento \"" + archivo.getName() + "\"?")) {
                 case 0:
                     if (archivo.canRead()) {
-                        if (archivo.getName().endsWith("dat")) {
+                        if (archivo.getName().endsWith("txt")) {
                             try {
                                 FileInputStream file = new FileInputStream(archivo);
                                 ObjectInputStream leer;
@@ -674,7 +686,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
                                 }
                                 file.close();
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(rootPane, "No es posible abrir el archivo.");
                             }
                         } else {
                             JOptionPane.showMessageDialog(null, "El archivo no es compatible");
@@ -704,7 +716,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
                 }
             }
             if (!cancelado) {
-                archivo = new File(seleccionar.getSelectedFile() + "\\" + nombre + ".dat");
+                archivo = new File(seleccionar.getSelectedFile() + "\\" + nombre + ".txt");
                 switch (JOptionPane.showConfirmDialog(null, "¿Desea crear el archivo \"" + archivo.getName() + "\"?")) {
                     case 0:
                     try {
@@ -714,7 +726,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
                         escribir.close();
                         file.close();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(rootPane, "No fue posible crear el archivo.");
                     }
                     break;
                     case 1:
@@ -763,6 +775,50 @@ public class EdicionGrafo extends javax.swing.JFrame {
         info.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         info.setVisible(true);
     }//GEN-LAST:event_goInfoActionPerformed
+
+    private void experimentarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_experimentarActionPerformed
+if (grafo.getNodos().isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane, "Dibuje un grafo");
+        } else if (!grafo.isValid()) {
+            JOptionPane.showMessageDialog(rootPane, "Grafo invalido.");
+        } else {
+
+            dibujarN.setSelected(false);
+            dibujarA.setSelected(false);
+            eraserN.setSelected(false);
+            eraserA.setSelected(false);
+            clear.setSelected(false);
+
+            dibujarN.setEnabled(false);
+            dibujarA.setEnabled(false);
+            eraserN.setEnabled(false);
+            eraserA.setEnabled(false);
+            clear.setEnabled(false);
+            algoritmo.setVisible(false);
+
+            dibujar = false;
+            makeLine = false;
+            line = false;
+            borrar = false;
+            limpiar = false;
+            eraserLine = false;
+
+            setInstancia.setEnabled(false);
+            getInstancia.setEnabled(false);
+            goConfig.setEnabled(false);
+            ejecutar.setEnabled(false);
+            experimentar.setEnabled(false);
+
+            cancelar.setVisible(true);
+
+            auxiliar = grafo;
+            Experimentacion solucion = new Experimentacion();
+            solucion.setTitle("Experimentación");
+            solucion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            solucion.setVisible(true);
+            repaint();
+        }        
+    }//GEN-LAST:event_experimentarActionPerformed
 
     public void desSeleccionar() {
         seleccionados = new ArrayList<>();
@@ -869,6 +925,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
     private javax.swing.JToggleButton eraserA;
     private javax.swing.JToggleButton eraserN;
     private javax.swing.JMenuItem exit;
+    private javax.swing.JMenuItem experimentar;
     private javax.swing.JMenuItem getImage;
     private javax.swing.JMenuItem getInstancia;
     private javax.swing.JMenuItem goConfig;
