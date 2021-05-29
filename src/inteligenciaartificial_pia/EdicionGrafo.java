@@ -550,11 +550,13 @@ public class EdicionGrafo extends javax.swing.JFrame {
             dibujarN.setSelected(false);
             dibujarA.setSelected(false);
             eraserN.setSelected(false);
+            eraserA.setSelected(false);
             clear.setSelected(false);
 
             dibujarN.setEnabled(false);
             dibujarA.setEnabled(false);
             eraserN.setEnabled(false);
+            eraserA.setEnabled(false);
             clear.setEnabled(false);
             algoritmo.setVisible(false);
 
@@ -563,9 +565,12 @@ public class EdicionGrafo extends javax.swing.JFrame {
             line = false;
             borrar = false;
             limpiar = false;
+            eraserLine = false;
 
             setInstancia.setEnabled(false);
             getInstancia.setEnabled(false);
+            goConfig.setEnabled(false);
+            ejecutar.setEnabled(false);
 
             cancelar.setVisible(true);
 
@@ -580,11 +585,14 @@ public class EdicionGrafo extends javax.swing.JFrame {
         dibujarN.setEnabled(true);
         dibujarA.setEnabled(true);
         eraserN.setEnabled(true);
+        eraserA.setEnabled(true);
         clear.setEnabled(true);
         algoritmo.setVisible(true);
 
         setInstancia.setEnabled(true);
         getInstancia.setEnabled(true);
+        goConfig.setEnabled(true);
+        ejecutar.setEnabled(true);
 
         resultado.setText("");
 
@@ -616,6 +624,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
     }//GEN-LAST:event_goConfigActionPerformed
 
     private void ejecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejecutarActionPerformed
+        repaint();
         algoritmoActionPerformed(evt);
     }//GEN-LAST:event_ejecutarActionPerformed
 

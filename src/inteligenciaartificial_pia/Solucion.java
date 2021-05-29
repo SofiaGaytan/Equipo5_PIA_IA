@@ -31,6 +31,8 @@ public class Solucion extends javax.swing.JFrame {
     Map<String, Float> heuristica = new TreeMap<>();
     Grafo grafo = EdicionGrafo.auxiliar;
     boolean algoritmo = EdicionGrafo.algoritmo_informado;
+    long inicio, fin;
+    long tiempo;
 
     /**
      * Creates new form Solucion
@@ -275,9 +277,14 @@ public class Solucion extends javax.swing.JFrame {
         meta = obtenerNodo(Integer.parseInt(nodoMeta.getValue().toString()));
         Priority solution;
         if (algoritmo) {
+            obtenerHeuristica();
+            inicio = System.nanoTime();
             solution = algoritmoA(nodoInicial.getValue().toString(), nodoMeta.getValue().toString());
+            fin = System.nanoTime();
         } else {
+            inicio = System.currentTimeMillis();
             solution = new UniformCost().search(inicial, meta);
+            fin = System.currentTimeMillis();
         }
         printSolution(solution);
         EdicionGrafo.ver.setVisible(true);
@@ -285,8 +292,7 @@ public class Solucion extends javax.swing.JFrame {
     }//GEN-LAST:event_resolverActionPerformed
 
     public Priority algoritmoA(String inicial, String meta) {
-
-        obtenerHeuristica();
+        
         //String inicial = JOptionPane.showInputDialog("Nodo Inicial: ");
         //String meta = JOptionPane.showInputDialog("Nodo Meta: ");
 
@@ -366,12 +372,14 @@ public class Solucion extends javax.swing.JFrame {
         Style estilo = EdicionGrafo.resultado.addStyle("Estilo", null);
         //System.out.println("Solution");
         //System.out.println("Cost: " + solution.getCost());
+        
+        StyleConstants.setForeground(estilo, Color.red);
         try {
             documento.insertString(documento.getLength(), "Costo Total: ", estilo);
         } catch (BadLocationException e) {
         }
 
-        StyleConstants.setForeground(estilo, Color.red);
+        StyleConstants.setForeground(estilo, Color.black);
         try {
             documento.insertString(documento.getLength(), String.valueOf(solution.getCost()), estilo);
         } catch (BadLocationException e) {
@@ -387,6 +395,25 @@ public class Solucion extends javax.swing.JFrame {
             recorrido = solution.getRecorrido();
         }
         EdicionGrafo.visitados = recorrido;
+        
+        tiempo =  fin-inicio;
+        StyleConstants.setForeground(estilo, Color.blue);
+        try {
+            documento.insertString(documento.getLength(), "\nTiempo: ", estilo);
+        } catch (BadLocationException e) {
+        }
+        
+        StyleConstants.setForeground(estilo, Color.black);
+        try {
+            documento.insertString(documento.getLength(), String.valueOf(tiempo) + " nanosegundos", estilo);
+        } catch (BadLocationException e) {
+        }
+        
+        StyleConstants.setForeground(estilo, Color.gray);
+        try {
+            documento.insertString(documento.getLength(), "\nTiempo de inicio: " + inicio + "\nTiempo de Fin: " + fin, estilo);
+        } catch (BadLocationException e) {
+        }
     }
 
     public Nodo obtenerNodo(int aux) {
