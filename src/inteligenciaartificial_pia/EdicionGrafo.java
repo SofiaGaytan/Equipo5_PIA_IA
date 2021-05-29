@@ -559,6 +559,8 @@ public class EdicionGrafo extends javax.swing.JFrame {
     private void algoritmoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algoritmoActionPerformed
         if (grafo.getNodos().isEmpty()) {
             JOptionPane.showMessageDialog(rootPane, "Dibuje un grafo");
+        } else if (!grafo.isValid()) {
+            JOptionPane.showMessageDialog(rootPane, "Grafo invalido.");
         } else {
 
             dibujarN.setSelected(false);
@@ -800,11 +802,11 @@ public class EdicionGrafo extends javax.swing.JFrame {
     }
 
     private void colorearAristas() {
-        for(int i=0;i<visitados.size()-1;i++){
-            for(Arista arista: grafo.getAristas()){
-                if((arista.getNodos().get(0).getNum() == Integer.parseInt(visitados.get(i))) && (arista.getNodos().get(1).getNum() == Integer.parseInt(visitados.get(i+1)))){
+        for (int i = 0; i < visitados.size() - 1; i++) {
+            for (Arista arista : grafo.getAristas()) {
+                if ((arista.getNodos().get(0).getNum() == Integer.parseInt(visitados.get(i))) && (arista.getNodos().get(1).getNum() == Integer.parseInt(visitados.get(i + 1)))) {
                     arista.setColor(Color.red);
-                }else if((arista.getNodos().get(1).getNum() == Integer.parseInt(visitados.get(i))) && (arista.getNodos().get(0).getNum() == Integer.parseInt(visitados.get(i+1)))){
+                } else if ((arista.getNodos().get(1).getNum() == Integer.parseInt(visitados.get(i))) && (arista.getNodos().get(0).getNum() == Integer.parseInt(visitados.get(i + 1)))) {
                     arista.setColor(Color.red);
                 }
             }
@@ -816,7 +818,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
         for (Nodo nodo : grafo.getNodos()) {
             nodo.setColor(Color.black);
         }
-        for(Arista arista: grafo.getAristas()){
+        for (Arista arista : grafo.getAristas()) {
             arista.setColor(Color.black);
         }
         repaint();

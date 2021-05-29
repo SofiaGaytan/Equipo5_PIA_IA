@@ -110,5 +110,14 @@ public class Grafo implements Serializable{
             aristas.remove(aux);
         }
     }
+    
+    public boolean isValid(){
+        for(Nodo nodo: this.nodos){
+            if(nodo.getAdyacentes().isEmpty()){
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
