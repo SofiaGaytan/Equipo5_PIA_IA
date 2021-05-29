@@ -12,20 +12,15 @@ import java.util.ArrayList;
  * @author ASUS
  */
 public class Priority {
-
     private final Nodo node;
     private final Float cost;
     private final ArrayList<Nodo> path;
-    private final ArrayList<String> recorrido;
 
-    public Priority(Nodo nodes, Float cost, ArrayList<Nodo> path, ArrayList<String> recorrido) {
+    public Priority(Nodo nodes, Float cost, ArrayList<Nodo> path) {
         this.node = nodes;
         this.cost = cost;
+        path.add(getNode());
         this.path = path;
-        if(this.node != null){
-            path.add(getNode());
-        }
-        this.recorrido = recorrido;
     }
 
     public ArrayList<Nodo> getPath() {
@@ -39,9 +34,4 @@ public class Priority {
     public Nodo getNode() {
         return node;
     }
-
-    public ArrayList<String> getRecorrido() {
-        return recorrido;
-    }
-    
 }

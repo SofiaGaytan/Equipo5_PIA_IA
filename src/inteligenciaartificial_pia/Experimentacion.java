@@ -290,14 +290,16 @@ public class Experimentacion extends javax.swing.JFrame {
 
     private void resolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resolverActionPerformed
         Nodo inicial, meta;
+        imprimirDatos();
+        
         inicial = obtenerNodo(Integer.parseInt(nodoInicial.getValue().toString()));
         meta = obtenerNodo(Integer.parseInt(nodoMeta.getValue().toString()));
-        Priority solution;
+        Priority solution = null;
         if (algoritmo) {
             obtenerHeuristica();
             for (int i = 0; i < 100; i++) {
                 inicio = System.nanoTime();
-                solution = algoritmoA(nodoInicial.getValue().toString(), nodoMeta.getValue().toString());
+                solution = new AStar().search(inicial, meta);
                 fin = System.nanoTime();
                 tiempo = fin - inicio;
                 experimentos.add(new Experimento(experimentos.size(), tiempo));
@@ -313,7 +315,7 @@ public class Experimentacion extends javax.swing.JFrame {
         }
         StyleConstants.setForeground(estilo, Color.blue);
         try {
-            documento.insertString(documento.getLength(), "Promedio de Tiempo Computacional: ", estilo);
+            documento.insertString(documento.getLength(), "\n\nPromedio de Tiempo Computacional: ", estilo);
         } catch (BadLocationException e) {
         }
         StyleConstants.setForeground(estilo, Color.black);
@@ -322,84 +324,67 @@ public class Experimentacion extends javax.swing.JFrame {
         } catch (BadLocationException e) {
         }
         crearArchivo();
+        printSolution(solution);
+        EdicionGrafo.ver.setVisible(true);
+        dispose();
         dispose();
     }//GEN-LAST:event_resolverActionPerformed
 
-    public Priority algoritmoA(String inicial, String meta) {
+    public void imprimirDatos() {
+        StyleConstants.setForeground(estilo, Color.gray);
+        try {
+            documento.insertString(documento.getLength(), "Nodo inicial: " + nodoInicial.getValue().toString() + "\nNodo meta: " + nodoMeta.getValue().toString(), estilo);
+        } catch (BadLocationException e) {
+        }
+    }
+    
+    private void printSolution(Priority solution) {
+        //System.out.println("Solution");
+        //System.out.println("Cost: " + solution.getCost());
 
-        //String inicial = JOptionPane.showInputDialog("Nodo Inicial: ");
-        //String meta = JOptionPane.showInputDialog("Nodo Meta: ");
-        float costo_acumulado = 0;
-        int pos;
-        int bandera;
+        StyleConstants.setForeground(estilo, Color.red);
+        try {
+            documento.insertString(documento.getLength(), "\n\nCosto Total: ", estilo);
+        } catch (BadLocationException e) {
+        }
 
-        int aux = 0;
+        StyleConstants.setForeground(estilo, Color.black);
+        try {
+            documento.insertString(documento.getLength(), String.valueOf(solution.getCost()), estilo);
+        } catch (BadLocationException e) {
+        }
 
-        String nodo_actual = inicial;
-
-        ArrayList<Nodo> nodos = grafo.getNodos();
-        ArrayList<String> nodos_visitados = new ArrayList<>();
         ArrayList<String> recorrido = new ArrayList<>();
 
-        //Busqueda
-        while (!nodo_actual.equals(meta)) {
-            Map<String, Float> hijos = new TreeMap<>();
-            //System.out.println("Nodo actual: " + nodo_actual);
-            nodos_visitados.add(nodo_actual);
-            recorrido.add(nodo_actual);
-            bandera = 0;
-            //calculamos el costo del nodo actual, hacia sus hijos
-            for (int i = 0; i < nodos.size(); i++) {
-
-                if (nodo_actual.equals(String.valueOf(nodos.get(i).getNum()))) {
-                    Iterator it = nodos.get(i).getAdyacentes().keySet().iterator();
-                    while (it.hasNext()) {
-                        //nombre del nodo adyacente
-                        float cant_hijos;
-                        String key = it.next().toString();
-                        if (nodos_visitados.contains(key) == false) {
-                            cant_hijos = costo_acumulado + nodos.get(i).getAdyacentes().get(key) + heuristica.get(key);
-                            hijos.put(key, cant_hijos);
-                        }
-                    }
-                }
-            }
-            if (hijos.isEmpty()) {
-                nodo_actual = inicial;
-                costo_acumulado = 0;
-                recorrido = new ArrayList<>();
-                recorrido.add(nodo_actual);
-            } else {
-                Iterator c = hijos.keySet().iterator();
-                String auxKey = c.next().toString();
-                float auxCost = hijos.get(auxKey);
-                Iterator b = hijos.keySet().iterator();
-                while (b.hasNext()) {
-                    String key = b.next().toString();
-                    if (hijos.get(key) <= auxCost) {
-                        auxKey = "";
-                        auxKey = key;
-                        auxCost = hijos.get(key);
-                    }
-                }
-                costo_acumulado = hijos.get(auxKey) - heuristica.get(auxKey);
-                nodo_actual = auxKey;
-                //System.out.println("    Costo: " + (hijos.get(auxKey) - heuristica.get(auxKey)));
-            }
+        for (Nodo node : solution.getPath()) {
+            recorrido.add(String.valueOf(node.getNum()));
         }
-        //System.out.println("Costo TOTAL: " + costo_acumulado);
-        nodos_visitados.add(meta);
-        recorrido.add(meta);
         EdicionGrafo.visitados = recorrido;
-        return new Priority(null, costo_acumulado, null, recorrido);
     }
-
+    
     public void obtenerHeuristica() {
         heuristica = new TreeMap<>();
         for (JSpinner h : heuristicos) {
             heuristica.put(h.getName(), Float.valueOf(h.getValue().toString()));
+            int index = obtenerIndex(Integer.parseInt(h.getName()));
+            grafo.getNodos().get(index).setHeuristic(Float.valueOf(h.getValue().toString()));
+            StyleConstants.setForeground(estilo, Color.gray);
+            try {
+                documento.insertString(documento.getLength(), "\nh(" + h.getName() + "): " + h.getValue().toString(), estilo);
+            } catch (BadLocationException e) {
+            }
         }
-        //System.out.println(heuristica);
+    }
+    
+    public int obtenerIndex(int aux) {
+        int index = 0;
+        for (Nodo nodo : grafo.getNodos()) {
+            if (nodo.getNum() == aux) {
+                return index;
+            }
+            index +=1;
+        }
+        return 0;
     }
 
     public double Promedio() {
@@ -433,7 +418,7 @@ public class Experimentacion extends javax.swing.JFrame {
         int i = 0;
         for(Experimento experimento: experimentos){
             row = sheet.createRow(i);
-            row.createCell(0).setCellValue(experimento.getIndice());
+            row.createCell(0).setCellValue(experimento.getIndice()+1);
             row.createCell(1).setCellValue(experimento.getTiempo());
             i+=1;
         }

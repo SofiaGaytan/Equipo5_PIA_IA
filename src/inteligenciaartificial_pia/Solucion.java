@@ -286,94 +286,26 @@ public class Solucion extends javax.swing.JFrame {
         if (algoritmo) {
             obtenerHeuristica();
             inicio = System.nanoTime();
-            solution = algoritmoA(nodoInicial.getValue().toString(), nodoMeta.getValue().toString());
+            solution = new AStar().search(inicial, meta);
             fin = System.nanoTime();
         } else {
             inicio = System.currentTimeMillis();
             solution = new UniformCost().search(inicial, meta);
             fin = System.currentTimeMillis();
         }
-            printSolution(solution);
-            EdicionGrafo.ver.setVisible(true);
-        
+        printSolution(solution);
+        EdicionGrafo.ver.setVisible(true);
+
         dispose();
     }//GEN-LAST:event_resolverActionPerformed
 
-    public Priority algoritmoA(String inicial, String meta) {
-
-        //String inicial = JOptionPane.showInputDialog("Nodo Inicial: ");
-        //String meta = JOptionPane.showInputDialog("Nodo Meta: ");
-        float costo_acumulado = 0;
-        int pos;
-        int bandera;
-
-        String nodo_actual = inicial;
-
-        ArrayList<Nodo> nodos = grafo.getNodos();
-        ArrayList<String> nodos_visitados = new ArrayList<>();
-        ArrayList<String> recorrido = new ArrayList<>();
-
-        //Busqueda
-        while (!nodo_actual.equals(meta)) {
-            Map<String, Float> hijos = new TreeMap<>();
-            //System.out.println("Nodo actual: " + nodo_actual);
-            nodos_visitados.add(nodo_actual);
-            recorrido.add(nodo_actual);
-            bandera = 0;
-            //calculamos el costo del nodo actual, hacia sus hijos
-            for (int i = 0; i < nodos.size(); i++) {
-
-                if (nodo_actual.equals(String.valueOf(nodos.get(i).getNum()))) {
-                    Iterator it = nodos.get(i).getAdyacentes().keySet().iterator();
-                    while (it.hasNext()) {
-                        //nombre del nodo adyacente
-                        float cant_hijos;
-                        String key = it.next().toString();
-                        if (nodos_visitados.contains(key) == false) {
-                            cant_hijos = costo_acumulado + nodos.get(i).getAdyacentes().get(key) + heuristica.get(key);
-                            hijos.put(key, cant_hijos);
-                        }
-                    }
-                }
-            }
-            if (hijos.isEmpty()) {
-                nodo_actual = inicial;
-                costo_acumulado = 0;
-                recorrido = new ArrayList<>();
-                recorrido.add(nodo_actual);
-            } else {
-                Iterator c = hijos.keySet().iterator();
-                String auxKey = c.next().toString();
-                float auxCost = hijos.get(auxKey);
-                Iterator b = hijos.keySet().iterator();
-                while (b.hasNext()) {
-                    String key = b.next().toString();
-                    if (hijos.get(key) <= auxCost) {
-                        auxKey = "";
-                        auxKey = key;
-                        auxCost = hijos.get(key);
-                    }
-                }
-                costo_acumulado = hijos.get(auxKey) - heuristica.get(auxKey);
-                nodo_actual = auxKey;
-                //System.out.println("    Costo: " + (hijos.get(auxKey) - heuristica.get(auxKey)));
-            }
-        }
-        //System.out.println("Costo TOTAL: " + costo_acumulado);
-        nodos_visitados.add(meta);
-        recorrido.add(meta);
-        EdicionGrafo.visitados = recorrido;
-        return new Priority(null, costo_acumulado, null, recorrido);
-    }
-
     public void obtenerHeuristica() {
-                try {
-            documento.insertString(documento.getLength(), "\n", estilo);
-        } catch (BadLocationException e) {
-        }
         heuristica = new TreeMap<>();
         for (JSpinner h : heuristicos) {
             heuristica.put(h.getName(), Float.valueOf(h.getValue().toString()));
+            int index = obtenerIndex(Integer.parseInt(h.getName()));
+            grafo.getNodos().get(index).setHeuristic(Float.valueOf(h.getValue().toString()));
+            StyleConstants.setForeground(estilo, Color.gray);
             try {
                 documento.insertString(documento.getLength(), "\nh(" + h.getName() + "): " + h.getValue().toString(), estilo);
             } catch (BadLocationException e) {
@@ -408,12 +340,8 @@ public class Solucion extends javax.swing.JFrame {
 
         ArrayList<String> recorrido = new ArrayList<>();
 
-        if (!algoritmo) {
-            for (Nodo node : solution.getPath()) {
-                recorrido.add(String.valueOf(node.getNum()));
-            }
-        } else {
-            recorrido = solution.getRecorrido();
+        for (Nodo node : solution.getPath()) {
+            recorrido.add(String.valueOf(node.getNum()));
         }
         EdicionGrafo.visitados = recorrido;
 
@@ -444,6 +372,17 @@ public class Solucion extends javax.swing.JFrame {
             }
         }
         return null;
+    }
+
+    public int obtenerIndex(int aux) {
+        int index = 0;
+        for (Nodo nodo : grafo.getNodos()) {
+            if (nodo.getNum() == aux) {
+                return index;
+            }
+            index += 1;
+        }
+        return 0;
     }
 
     /**

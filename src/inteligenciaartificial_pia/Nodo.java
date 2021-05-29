@@ -23,6 +23,7 @@ public class Nodo implements Serializable{
     private int num;
     private Map<String, Float> adyacentes = new TreeMap<>();
     private  ArrayList<Edge> edges = new ArrayList<>();
+    private float heuristic;
 
     public Nodo(Shape nodo, Color color, int num) {
         super();
@@ -77,6 +78,14 @@ public class Nodo implements Serializable{
     
     public void setEdges(ArrayList<Edge> edges) {
         this.edges = edges;
+    }
+
+    public float getHeuristic() {
+        return heuristic;
+    }
+
+    public void setHeuristic(float heuristic) {
+        this.heuristic = heuristic;
     }
 
 }
