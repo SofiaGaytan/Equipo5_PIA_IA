@@ -39,6 +39,10 @@ public class Solucion extends javax.swing.JFrame {
      */
     public Solucion() {
         initComponents();
+        SpinnerNumberModel modeloInicial = new SpinnerNumberModel(0, 0, grafo.getNodos().size()-1, 1);
+        nodoInicial.setModel(modeloInicial);
+        SpinnerNumberModel modeloMeta = new SpinnerNumberModel(0, 0, grafo.getNodos().size()-1, 1);
+        nodoMeta.setModel(modeloMeta);
         hPanel.setVisible(false);
         hText.setVisible(false);
         Volver.setVisible(false);
@@ -364,7 +368,7 @@ public class Solucion extends javax.swing.JFrame {
         for (JSpinner h : heuristicos) {
             heuristica.put(h.getName(), Float.valueOf(h.getValue().toString()));
         }
-        System.out.println(heuristica);
+        //System.out.println(heuristica);
     }
 
     private void printSolution(Priority solution) {
