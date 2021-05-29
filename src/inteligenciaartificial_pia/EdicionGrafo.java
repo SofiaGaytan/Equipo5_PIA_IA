@@ -109,11 +109,12 @@ public class EdicionGrafo extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         goInicio = new javax.swing.JMenuItem();
+        goInfo = new javax.swing.JMenuItem();
         exit = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         setInstancia = new javax.swing.JMenuItem();
-        getImage = new javax.swing.JMenuItem();
         getInstancia = new javax.swing.JMenuItem();
+        getImage = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         ejecutar = new javax.swing.JMenuItem();
         goConfig = new javax.swing.JMenuItem();
@@ -197,7 +198,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
             }
         });
 
-        resultadoText.setText("Resultado");
+        resultadoText.setText("Comentarios");
 
         cancelar.setText("Salir");
         cancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -226,7 +227,20 @@ public class EdicionGrafo extends javax.swing.JFrame {
         jMenu1.setText("Inicio");
 
         goInicio.setText("Ir al Inicio");
+        goInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                goInicioActionPerformed(evt);
+            }
+        });
         jMenu1.add(goInicio);
+
+        goInfo.setText("Información");
+        goInfo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                goInfoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(goInfo);
 
         exit.setText("Salir");
         exit.addActionListener(new java.awt.event.ActionListener() {
@@ -248,14 +262,6 @@ public class EdicionGrafo extends javax.swing.JFrame {
         });
         jMenu3.add(setInstancia);
 
-        getImage.setText("Descargar imagen");
-        getImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                getImageActionPerformed(evt);
-            }
-        });
-        jMenu3.add(getImage);
-
         getInstancia.setText("Descargar instancia");
         getInstancia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -263,6 +269,14 @@ public class EdicionGrafo extends javax.swing.JFrame {
             }
         });
         jMenu3.add(getInstancia);
+
+        getImage.setText("Descargar imagen");
+        getImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                getImageActionPerformed(evt);
+            }
+        });
+        jMenu3.add(getImage);
 
         jMenuBar1.add(jMenu3);
 
@@ -338,7 +352,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
                         .addComponent(ver)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelar)
-                        .addGap(0, 12, Short.MAX_VALUE))
+                        .addGap(0, 94, Short.MAX_VALUE))
                     .addComponent(resultadoPanel))
                 .addContainerGap())
         );
@@ -527,7 +541,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
                     } else {
                         desSeleccionar();
                     }
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(rootPane, "Arista inexistente.");
                 }
             }
@@ -576,6 +590,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
 
             auxiliar = grafo;
             Solucion solucion = new Solucion();
+            solucion.setTitle("Datos de Entrada");
             solucion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             solucion.setVisible(true);
         }
@@ -604,7 +619,9 @@ public class EdicionGrafo extends javax.swing.JFrame {
 
     private void verActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verActionPerformed
         if (ver.getText().equals("Ver solución")) {
+            descolorear();
             colorearNodos();
+            colorearAristas();
             ver.setText("Ocultar solución");
         } else {
             descolorear();
@@ -619,6 +636,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
 
     private void goConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goConfigActionPerformed
         Configuracion config = new Configuracion(algoritmo_informado);
+        config.setTitle("Configuración");
         config.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         config.setVisible(true);
     }//GEN-LAST:event_goConfigActionPerformed
@@ -638,7 +656,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
 
     private void setInstanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setInstanciaActionPerformed
         seleccionar.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        if (seleccionar.showDialog(null, "Abrir") == JFileChooser.APPROVE_OPTION) {
+        if (seleccionar.showDialog(null, "Abrir archivo") == JFileChooser.APPROVE_OPTION) {
             archivo = seleccionar.getSelectedFile();
             switch (JOptionPane.showConfirmDialog(null, "¿Desea abrir el documento \"" + archivo.getName() + "\"?")) {
                 case 0:
@@ -674,7 +692,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
     private void getInstanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getInstanciaActionPerformed
         boolean cancelado = false;
         seleccionar.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        if (seleccionar.showDialog(null, "Guardar") == JFileChooser.APPROVE_OPTION) {
+        if (seleccionar.showDialog(null, "Seleccione una carpeta") == JFileChooser.APPROVE_OPTION) {
             String nombre = "";
             while (nombre.isEmpty()) {
                 nombre = JOptionPane.showInputDialog("Nombre del archivo: ");
@@ -730,6 +748,20 @@ public class EdicionGrafo extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_eraserAActionPerformed
 
+    private void goInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goInicioActionPerformed
+        Inicio inicio = new Inicio();
+        inicio.setTitle("Inicio");
+        inicio.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_goInicioActionPerformed
+
+    private void goInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goInfoActionPerformed
+        Informacion info = new Informacion();
+        info.setTitle("Información");
+        info.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        info.setVisible(true);
+    }//GEN-LAST:event_goInfoActionPerformed
+
     public void desSeleccionar() {
         seleccionados = new ArrayList<>();
         seleccionado = null;
@@ -757,7 +789,6 @@ public class EdicionGrafo extends javax.swing.JFrame {
     }
 
     private void colorearNodos() {
-        descolorear();
         for (String visitado : visitados) {
             for (Nodo nodo : grafo.getNodos()) {
                 if (String.valueOf(nodo.getNum()).equals(visitado)) {
@@ -768,9 +799,25 @@ public class EdicionGrafo extends javax.swing.JFrame {
         repaint();
     }
 
+    private void colorearAristas() {
+        for(int i=0;i<visitados.size()-1;i++){
+            for(Arista arista: grafo.getAristas()){
+                if((arista.getNodos().get(0).getNum() == Integer.parseInt(visitados.get(i))) && (arista.getNodos().get(1).getNum() == Integer.parseInt(visitados.get(i+1)))){
+                    arista.setColor(Color.red);
+                }else if((arista.getNodos().get(1).getNum() == Integer.parseInt(visitados.get(i))) && (arista.getNodos().get(0).getNum() == Integer.parseInt(visitados.get(i+1)))){
+                    arista.setColor(Color.red);
+                }
+            }
+        }
+        repaint();
+    }
+
     private void descolorear() {
         for (Nodo nodo : grafo.getNodos()) {
             nodo.setColor(Color.black);
+        }
+        for(Arista arista: grafo.getAristas()){
+            arista.setColor(Color.black);
         }
         repaint();
     }
@@ -823,6 +870,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
     private javax.swing.JMenuItem getImage;
     private javax.swing.JMenuItem getInstancia;
     private javax.swing.JMenuItem goConfig;
+    private javax.swing.JMenuItem goInfo;
     private javax.swing.JMenuItem goInicio;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;

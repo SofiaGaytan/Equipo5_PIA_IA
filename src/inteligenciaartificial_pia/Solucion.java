@@ -27,6 +27,8 @@ import javax.swing.text.StyledDocument;
  */
 public class Solucion extends javax.swing.JFrame {
 
+    StyledDocument documento = EdicionGrafo.resultado.getStyledDocument();
+    Style estilo = EdicionGrafo.resultado.addStyle("Estilo", null);
     ArrayList<JSpinner> heuristicos = new ArrayList();
     Map<String, Float> heuristica = new TreeMap<>();
     Grafo grafo = EdicionGrafo.auxiliar;
@@ -39,9 +41,9 @@ public class Solucion extends javax.swing.JFrame {
      */
     public Solucion() {
         initComponents();
-        SpinnerNumberModel modeloInicial = new SpinnerNumberModel(0, 0, grafo.getNodos().size()-1, 1);
+        SpinnerNumberModel modeloInicial = new SpinnerNumberModel(0, 0, grafo.getNodos().size() - 1, 1);
         nodoInicial.setModel(modeloInicial);
-        SpinnerNumberModel modeloMeta = new SpinnerNumberModel(0, 0, grafo.getNodos().size()-1, 1);
+        SpinnerNumberModel modeloMeta = new SpinnerNumberModel(0, 0, grafo.getNodos().size() - 1, 1);
         nodoMeta.setModel(modeloMeta);
         hPanel.setVisible(false);
         hText.setVisible(false);
@@ -277,6 +279,7 @@ public class Solucion extends javax.swing.JFrame {
 
     private void resolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resolverActionPerformed
         Nodo inicial, meta;
+        imprimirDatos();
         inicial = obtenerNodo(Integer.parseInt(nodoInicial.getValue().toString()));
         meta = obtenerNodo(Integer.parseInt(nodoMeta.getValue().toString()));
         Priority solution;
@@ -296,10 +299,9 @@ public class Solucion extends javax.swing.JFrame {
     }//GEN-LAST:event_resolverActionPerformed
 
     public Priority algoritmoA(String inicial, String meta) {
-        
+
         //String inicial = JOptionPane.showInputDialog("Nodo Inicial: ");
         //String meta = JOptionPane.showInputDialog("Nodo Meta: ");
-
         float costo_acumulado = 0;
         int pos;
         int bandera;
@@ -367,19 +369,29 @@ public class Solucion extends javax.swing.JFrame {
         heuristica = new TreeMap<>();
         for (JSpinner h : heuristicos) {
             heuristica.put(h.getName(), Float.valueOf(h.getValue().toString()));
+            try {
+                documento.insertString(documento.getLength(), "\nh(" + h.getName() + "): " + h.getValue().toString(), estilo);
+            } catch (BadLocationException e) {
+            }
         }
         //System.out.println(heuristica);
     }
 
+    public void imprimirDatos() {
+        StyleConstants.setForeground(estilo, Color.gray);
+        try {
+            documento.insertString(documento.getLength(), "Nodo inicial: " + nodoInicial.getValue().toString() + "\nNodo meta: " + nodoMeta.getValue().toString() + "\n", estilo);
+        } catch (BadLocationException e) {
+        }
+    }
+
     private void printSolution(Priority solution) {
-        StyledDocument documento = EdicionGrafo.resultado.getStyledDocument();
-        Style estilo = EdicionGrafo.resultado.addStyle("Estilo", null);
         //System.out.println("Solution");
         //System.out.println("Cost: " + solution.getCost());
-        
+
         StyleConstants.setForeground(estilo, Color.red);
         try {
-            documento.insertString(documento.getLength(), "Costo Total: ", estilo);
+            documento.insertString(documento.getLength(), "\n\nCosto Total: ", estilo);
         } catch (BadLocationException e) {
         }
 
@@ -399,23 +411,23 @@ public class Solucion extends javax.swing.JFrame {
             recorrido = solution.getRecorrido();
         }
         EdicionGrafo.visitados = recorrido;
-        
-        tiempo =  fin-inicio;
+
+        tiempo = fin - inicio;
         StyleConstants.setForeground(estilo, Color.blue);
         try {
-            documento.insertString(documento.getLength(), "\nTiempo: ", estilo);
+            documento.insertString(documento.getLength(), "\n\nTiempo: ", estilo);
         } catch (BadLocationException e) {
         }
-        
+
         StyleConstants.setForeground(estilo, Color.black);
         try {
             documento.insertString(documento.getLength(), String.valueOf(tiempo) + " nanosegundos", estilo);
         } catch (BadLocationException e) {
         }
-        
+
         StyleConstants.setForeground(estilo, Color.gray);
         try {
-            documento.insertString(documento.getLength(), "\nTiempo de inicio: " + inicio + "\nTiempo de Fin: " + fin, estilo);
+            documento.insertString(documento.getLength(), "\nTiempo de Inicio: " + inicio + "\nTiempo de Fin: " + fin, estilo);
         } catch (BadLocationException e) {
         }
     }

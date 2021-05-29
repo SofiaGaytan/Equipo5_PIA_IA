@@ -68,7 +68,7 @@ public final class Imagen extends javax.swing.JFrame {
             while (!aceptado) {
                 String nombre = "";
                 while (nombre.isEmpty()) {
-                    nombre = JOptionPane.showInputDialog("Nombre del archivo: ");
+                    nombre = JOptionPane.showInputDialog("Nombre de la imagen: ");
                     if (nombre == null) {
                         cancelado = true;
                         JOptionPane.showMessageDialog(rootPane, "La imagen no se guardara.");

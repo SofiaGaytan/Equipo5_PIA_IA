@@ -13,6 +13,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Ir al Inicio"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="goInicioActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="goInfo">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Informaci&#xf3;n"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="goInfoActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exit">
               <Properties>
@@ -37,20 +48,20 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="setInstanciaActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="getImage">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Descargar imagen"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="getImageActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="getInstancia">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Descargar instancia"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="getInstanciaActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="getImage">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Descargar imagen"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="getImageActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
@@ -159,7 +170,7 @@
                       <Component id="ver" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cancelar" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="12" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="94" max="32767" attributes="0"/>
                   </Group>
                   <Component id="resultadoPanel" max="32767" attributes="0"/>
               </Group>
@@ -275,7 +286,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="resultadoText">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Resultado"/>
+        <Property name="text" type="java.lang.String" value="Comentarios"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="cancelar">

@@ -15,8 +15,9 @@ public class InteligenciaArtificial_PIA {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        EdicionGrafo ventana = new EdicionGrafo();
-        ventana.setVisible(true);
+        Inicio inicio = new Inicio();
+        inicio.setTitle("Inicio");
+        inicio.setVisible(true);
     }
     
 }
