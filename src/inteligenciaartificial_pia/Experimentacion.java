@@ -9,17 +9,26 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -312,6 +321,7 @@ public class Experimentacion extends javax.swing.JFrame {
             documento.insertString(documento.getLength(), String.valueOf(Promedio()) + " nanosegundos", estilo);
         } catch (BadLocationException e) {
         }
+        crearArchivo();
         dispose();
     }//GEN-LAST:event_resolverActionPerformed
 
@@ -391,7 +401,7 @@ public class Experimentacion extends javax.swing.JFrame {
         }
         //System.out.println(heuristica);
     }
-    
+
     public double Promedio() {
         long sumatoria = 0;
         for (Experimento experimento : experimentos) {
@@ -408,6 +418,63 @@ public class Experimentacion extends javax.swing.JFrame {
             }
         }
         return null;
+    }
+
+    public void crearArchivo() {
+        String algoritmoName = "";
+        if(algoritmo){
+            algoritmoName = "AlgoritmoAEstrella";
+        }else{
+            algoritmoName = "AlgoritmoCosteUniforme";
+        }
+        Workbook book = new HSSFWorkbook();
+        Sheet sheet = book.createSheet();
+        Row row;
+        int i = 0;
+        for(Experimento experimento: experimentos){
+            row = sheet.createRow(i);
+            row.createCell(0).setCellValue(experimento.getIndice());
+            row.createCell(1).setCellValue(experimento.getTiempo());
+            i+=1;
+        }
+        JFileChooser seleccionar = new JFileChooser();
+        File archivo;
+        boolean aceptado = false;
+        boolean cancelado = false;
+        seleccionar.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if (seleccionar.showDialog(null, "Guardar") == JFileChooser.APPROVE_OPTION) {
+            while (!aceptado) {
+                String nombre = "";
+                while (nombre.isEmpty()) {
+                    nombre = JOptionPane.showInputDialog("Nombre del archivo: ");
+                    if (nombre == null) {
+                        cancelado = true;
+                        break;
+                    }
+                }
+                if (!cancelado) {
+                    archivo = new File(seleccionar.getSelectedFile() + "\\" + nombre + "_" + algoritmoName + ".xls");
+                    switch (JOptionPane.showConfirmDialog(null, "¿Desea crear el archivo\"" + archivo.getName() + "\"?")) {
+                        case 0:
+                    try {
+                        FileOutputStream file = new FileOutputStream(archivo);
+                        book.write(file);
+                        file.close();
+                        } catch (Exception e) {
+                        }
+                        aceptado = true;
+                        break;
+                        case 1:
+                            aceptado = false;
+                            break;
+                        case 2:
+                            aceptado = true;
+                            JOptionPane.showMessageDialog(rootPane, "La imagen no se guardara.");
+                            break;
+                    }
+                }
+            }
+        }
     }
 
     /**

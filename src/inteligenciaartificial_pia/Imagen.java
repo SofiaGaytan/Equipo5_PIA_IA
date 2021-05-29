@@ -48,7 +48,11 @@ public final class Imagen extends javax.swing.JFrame {
             g2.setColor(nodo.getColor());
             g2.fill(nodo.getNodo());
             g2.setColor(Color.white);
-            g2.drawString(String.valueOf(nodo.getNum()), nodo.getNodo().getBounds().x + 7, nodo.getNodo().getBounds().y + 15);
+            if (nodo.getNum() < 10) {
+                g2.drawString(String.valueOf(nodo.getNum()), nodo.getNodo().getBounds().x + 7, nodo.getNodo().getBounds().y + 15);
+            } else {
+                g2.drawString(String.valueOf(nodo.getNum()), nodo.getNodo().getBounds().x + 3, nodo.getNodo().getBounds().y + 15);
+            }
         }
 
         g2.dispose();
