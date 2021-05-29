@@ -16,12 +16,16 @@ public class Priority {
     private final Nodo node;
     private final Float cost;
     private final ArrayList<Nodo> path;
+    private final ArrayList<String> recorrido;
 
-    public Priority(Nodo nodes, Float cost, ArrayList<Nodo> path) {
+    public Priority(Nodo nodes, Float cost, ArrayList<Nodo> path, ArrayList<String> recorrido) {
         this.node = nodes;
         this.cost = cost;
         this.path = path;
-        path.add(getNode());
+        if(this.node != null){
+            path.add(getNode());
+        }
+        this.recorrido = recorrido;
     }
 
     public ArrayList<Nodo> getPath() {
@@ -36,4 +40,8 @@ public class Priority {
         return node;
     }
 
+    public ArrayList<String> getRecorrido() {
+        return recorrido;
+    }
+    
 }

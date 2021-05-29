@@ -40,9 +40,9 @@ public class Solucion extends javax.swing.JFrame {
         hPanel.setVisible(false);
         hText.setVisible(false);
         Volver.setVisible(false);
-        if(algoritmo){
-        resolver.setVisible(false);
-        }else{
+        if (algoritmo) {
+            resolver.setVisible(false);
+        } else {
             resolver.setAlignmentX(Aceptar.getAlignmentX());
             resolver.setAlignmentY(Aceptar.getAlignmentY());
             Aceptar.setVisible(false);
@@ -212,14 +212,13 @@ public class Solucion extends javax.swing.JFrame {
     private void AceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AceptarActionPerformed
         nodosPanel.setVisible(false);
         nodoText.setVisible(false);
-        
-        
-        if(algoritmo){
-        Aceptar.setVisible(false);
-        hPanel.setVisible(true);
-        hText.setVisible(true);
-        Volver.setVisible(true);
-        resolver.setVisible(true);
+
+        if (algoritmo) {
+            Aceptar.setVisible(false);
+            hPanel.setVisible(true);
+            hText.setVisible(true);
+            Volver.setVisible(true);
+            resolver.setVisible(true);
         }
 
         GridBagLayout modeloL = new GridBagLayout();
@@ -274,19 +273,18 @@ public class Solucion extends javax.swing.JFrame {
         Nodo inicial, meta;
         inicial = obtenerNodo(Integer.parseInt(nodoInicial.getValue().toString()));
         meta = obtenerNodo(Integer.parseInt(nodoMeta.getValue().toString()));
+        Priority solution;
         if (algoritmo) {
-            algoritmoA(nodoInicial.getValue().toString(), nodoMeta.getValue().toString());
+            solution = algoritmoA(nodoInicial.getValue().toString(), nodoMeta.getValue().toString());
         } else {
-            var solution = new UniformCost().search(inicial, meta);
-            printSolution(solution);
+            solution = new UniformCost().search(inicial, meta);
         }
+        printSolution(solution);
         EdicionGrafo.ver.setVisible(true);
         dispose();
     }//GEN-LAST:event_resolverActionPerformed
 
-    public void algoritmoA(String inicial, String meta) {
-        StyledDocument documento = EdicionGrafo.resultado.getStyledDocument();
-        Style estilo = EdicionGrafo.resultado.addStyle("Estilo", null);
+    public Priority algoritmoA(String inicial, String meta) {
 
         obtenerHeuristica();
         //String inicial = JOptionPane.showInputDialog("Nodo Inicial: ");
@@ -305,7 +303,7 @@ public class Solucion extends javax.swing.JFrame {
         //Busqueda
         while (!nodo_actual.equals(meta)) {
             Map<String, Float> hijos = new TreeMap<>();
-            System.out.println("Nodo actual: " + nodo_actual);
+            //System.out.println("Nodo actual: " + nodo_actual);
             nodos_visitados.add(nodo_actual);
             recorrido.add(nodo_actual);
             bandera = 0;
@@ -345,25 +343,14 @@ public class Solucion extends javax.swing.JFrame {
                 }
                 costo_acumulado = hijos.get(auxKey) - heuristica.get(auxKey);
                 nodo_actual = auxKey;
-                System.out.println("    Costo: " + (hijos.get(auxKey) - heuristica.get(auxKey)));
+                //System.out.println("    Costo: " + (hijos.get(auxKey) - heuristica.get(auxKey)));
             }
         }
-        StyleConstants.setForeground(estilo, Color.black);
-        try {
-            documento.insertString(documento.getLength(), "Costo Total: ", estilo);
-        } catch (BadLocationException e) {
-        }
-
-        StyleConstants.setForeground(estilo, Color.red);
-        try {
-            documento.insertString(documento.getLength(), String.valueOf(costo_acumulado), estilo);
-        } catch (BadLocationException e) {
-        }
-
-        System.out.println("Costo TOTAL: " + costo_acumulado);
+        //System.out.println("Costo TOTAL: " + costo_acumulado);
         nodos_visitados.add(meta);
         recorrido.add(meta);
         EdicionGrafo.visitados = recorrido;
+        return new Priority(null, costo_acumulado, null, recorrido);
     }
 
     public void obtenerHeuristica() {
@@ -374,12 +361,11 @@ public class Solucion extends javax.swing.JFrame {
         System.out.println(heuristica);
     }
 
-    private static void printSolution(Priority solution) {
+    private void printSolution(Priority solution) {
         StyledDocument documento = EdicionGrafo.resultado.getStyledDocument();
         Style estilo = EdicionGrafo.resultado.addStyle("Estilo", null);
-
-        System.out.println("Solution");
-        System.out.println("Cost: " + solution.getCost());
+        //System.out.println("Solution");
+        //System.out.println("Cost: " + solution.getCost());
         try {
             documento.insertString(documento.getLength(), "Costo Total: ", estilo);
         } catch (BadLocationException e) {
@@ -390,12 +376,17 @@ public class Solucion extends javax.swing.JFrame {
             documento.insertString(documento.getLength(), String.valueOf(solution.getCost()), estilo);
         } catch (BadLocationException e) {
         }
-        System.out.print("Path: ");
-        ArrayList<String> nodos_visitados = new ArrayList<>();
-        for (Nodo node : solution.getPath()) {
-            nodos_visitados.add(String.valueOf(node.getNum()));
+
+        ArrayList<String> recorrido = new ArrayList<>();
+
+        if (!algoritmo) {
+            for (Nodo node : solution.getPath()) {
+                recorrido.add(String.valueOf(node.getNum()));
+            }
+        } else {
+            recorrido = solution.getRecorrido();
         }
-        EdicionGrafo.visitados = nodos_visitados;
+        EdicionGrafo.visitados = recorrido;
     }
 
     public Nodo obtenerNodo(int aux) {

@@ -21,7 +21,6 @@ import java.util.TreeMap;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JSpinner;
 
 /**
  *
@@ -45,6 +44,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
     boolean makeLine = false;
     boolean line = false;
     boolean borrar = false;
+    boolean eraserLine = false;
     boolean limpiar = false;
 
     public static boolean algoritmo_informado = true; //False para algoritmo no informado (Algoritmo de costo uniforme), True para algortimo informado (Algoritmo A*).
@@ -105,6 +105,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
         resultadoPanel = new javax.swing.JScrollPane();
         resultado = new javax.swing.JTextPane();
         ver = new javax.swing.JButton();
+        eraserA = new javax.swing.JToggleButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         goInicio = new javax.swing.JMenuItem();
@@ -215,6 +216,13 @@ public class EdicionGrafo extends javax.swing.JFrame {
             }
         });
 
+        eraserA.setText("Borrar arista");
+        eraserA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eraserAActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("Inicio");
 
         goInicio.setText("Ir al Inicio");
@@ -299,7 +307,8 @@ public class EdicionGrafo extends javax.swing.JFrame {
                             .addComponent(clear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(algoritmo, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
-                            .addComponent(ver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(ver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(eraserA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(resultadoText))
                 .addContainerGap())
         );
@@ -314,9 +323,11 @@ public class EdicionGrafo extends javax.swing.JFrame {
                         .addComponent(dibujarA)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(eraserN)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(10, 10, 10)
+                        .addComponent(eraserA)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(clear)
-                        .addGap(32, 32, 32)
+                        .addGap(39, 39, 39)
                         .addComponent(algoritmo))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -345,6 +356,9 @@ public class EdicionGrafo extends javax.swing.JFrame {
         } else if (limpiar) {
             limpiar = false;
             clear.setSelected(false);
+        } else if (eraserLine) {
+            eraserLine = false;
+            eraserA.setSelected(false);
         }
         dibujar = !dibujar;
     }//GEN-LAST:event_dibujarNActionPerformed
@@ -359,6 +373,9 @@ public class EdicionGrafo extends javax.swing.JFrame {
         } else if (borrar) {
             borrar = false;
             eraserN.setSelected(false);
+        } else if (eraserLine) {
+            eraserLine = false;
+            eraserA.setSelected(false);
         }
         grafo.setNodos(new ArrayList<Nodo>());
         grafo.setAristas(new ArrayList<Arista>());
@@ -380,6 +397,9 @@ public class EdicionGrafo extends javax.swing.JFrame {
             } else if (limpiar) {
                 limpiar = false;
                 clear.setSelected(false);
+            } else if (eraserLine) {
+                eraserLine = false;
+                eraserA.setSelected(false);
             }
             desSeleccionar();
             makeLine = !makeLine;
@@ -400,6 +420,9 @@ public class EdicionGrafo extends javax.swing.JFrame {
             } else if (limpiar) {
                 limpiar = false;
                 clear.setSelected(false);
+            } else if (eraserLine) {
+                eraserLine = false;
+                eraserA.setSelected(false);
             }
             desSeleccionar();
             borrar = !borrar;
@@ -433,7 +456,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
             } catch (Error e) {
                 JOptionPane.showMessageDialog(rootPane, e.getLocalizedMessage());
             }
-        } else if (makeLine) {
+        } else if (makeLine || eraserLine) {
             if (seleccionados.size() < 2) {
                 Color color;
                 for (Nodo nodo : grafo.getNodos()) {
@@ -467,30 +490,45 @@ public class EdicionGrafo extends javax.swing.JFrame {
         }
         repaint();
         if (seleccionados.size() == 2) {
-            for (Arista a : grafo.getAristas()) {
-                if ((a.getNodos().get(0).equals(seleccionados.get(0)) && a.getNodos().get(1).equals(seleccionados.get(1))) || (a.getNodos().get(1).equals(seleccionados.get(0)) && a.getNodos().get(0).equals(seleccionados.get(1)))) {
-                    line = true;
-                }
-            }
-            if (line) {
-                JOptionPane.showMessageDialog(rootPane, "Arista repetida");
-                line = false;
-            } else {
-                String tam = "";
-                while (tam.isEmpty()) {
-                    tam = JOptionPane.showInputDialog("Tamaño de la arista: ");
-                    if (tam == null) {
-                        break;
+            if (makeLine) {
+                for (Arista a : grafo.getAristas()) {
+                    if ((a.getNodos().get(0).equals(seleccionados.get(0)) && a.getNodos().get(1).equals(seleccionados.get(1))) || (a.getNodos().get(1).equals(seleccionados.get(0)) && a.getNodos().get(0).equals(seleccionados.get(1)))) {
+                        line = true;
                     }
                 }
-                if (tam != null) {
-                    if (seleccionados.get(0) == seleccionados.get(1)) {
-                        grafo.agregarArista2(seleccionados, tam);
+                if (line) {
+                    JOptionPane.showMessageDialog(rootPane, "Arista repetida");
+                    line = false;
+                } else {
+                    String tam = "";
+                    while (tam.isEmpty()) {
+                        tam = JOptionPane.showInputDialog("Tamaño de la arista: ");
+                        if (tam == null) {
+                            break;
+                        }
+                    }
+                    if (tam != null) {
+                        if (seleccionados.get(0) == seleccionados.get(1)) {
+                            grafo.agregarArista2(seleccionados, tam);
+                            repaint();
+                        } else {
+                            grafo.agregarArista(seleccionados, tam);
+                            repaint();
+                        }
+                    }
+                }
+            } else if (eraserLine) {
+                boolean encontrada = grafo.encontrarArista(seleccionados);
+                if (encontrada) {
+                    int decision = JOptionPane.showConfirmDialog(rootPane, "¿Quiere eliminar la arista del nodo " + seleccionados.get(0).getNum() + " al nodo " + seleccionados.get(1).getNum() + "?");
+                    if (decision == 0) {
+                        grafo.eliminarArista(seleccionados);
                         repaint();
                     } else {
-                        grafo.agregarArista(seleccionados, tam);
-                        repaint();
+                        desSeleccionar();
                     }
+                }else{
+                    JOptionPane.showMessageDialog(rootPane, "Arista inexistente.");
                 }
             }
             desSeleccionar();
@@ -525,7 +563,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
             line = false;
             borrar = false;
             limpiar = false;
-            
+
             setInstancia.setEnabled(false);
             getInstancia.setEnabled(false);
 
@@ -544,9 +582,9 @@ public class EdicionGrafo extends javax.swing.JFrame {
         eraserN.setEnabled(true);
         clear.setEnabled(true);
         algoritmo.setVisible(true);
-        
+
         setInstancia.setEnabled(true);
-            getInstancia.setEnabled(true);
+        getInstancia.setEnabled(true);
 
         resultado.setText("");
 
@@ -557,10 +595,10 @@ public class EdicionGrafo extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelarActionPerformed
 
     private void verActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verActionPerformed
-        if(ver.getText().equals("Ver solución")){
+        if (ver.getText().equals("Ver solución")) {
             colorearNodos();
             ver.setText("Ocultar solución");
-        }else{
+        } else {
             descolorear();
             ver.setText("Ver solución");
         }
@@ -603,6 +641,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
                                 while (file.available() > 0) {
                                     leer = new ObjectInputStream(file);
                                     grafo = (Grafo) leer.readObject();
+                                    repaint();
                                 }
                                 file.close();
                             } catch (Exception e) {
@@ -635,29 +674,52 @@ public class EdicionGrafo extends javax.swing.JFrame {
                     break;
                 }
             }
-            if(!cancelado){
-            archivo = new File(seleccionar.getSelectedFile() + "\\" + nombre + ".dat");
-            switch (JOptionPane.showConfirmDialog(null, "¿Desea crear el archivo \"" + archivo.getName() + "\"?")) {
-                case 0:
+            if (!cancelado) {
+                archivo = new File(seleccionar.getSelectedFile() + "\\" + nombre + ".dat");
+                switch (JOptionPane.showConfirmDialog(null, "¿Desea crear el archivo \"" + archivo.getName() + "\"?")) {
+                    case 0:
                     try {
-                    FileOutputStream file = new FileOutputStream(archivo);
-                    ObjectOutputStream escribir = new ObjectOutputStream(file);
-                    escribir.writeObject(grafo);
-                    escribir.close();
-                    file.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        FileOutputStream file = new FileOutputStream(archivo);
+                        ObjectOutputStream escribir = new ObjectOutputStream(file);
+                        escribir.writeObject(grafo);
+                        escribir.close();
+                        file.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                    case 1:
+                        getInstanciaActionPerformed(evt);
+                        break;
+                    case 2:
+                        break;
                 }
-                break;
-                case 1:
-                    getInstanciaActionPerformed(evt);
-                    break;
-                case 2:
-                    break;
-            }
             }
         }
     }//GEN-LAST:event_getInstanciaActionPerformed
+
+    private void eraserAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eraserAActionPerformed
+        if (grafo.getNodos().isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane, "El grafo no tiene nodos.");
+            eraserA.setSelected(false);
+        } else {
+            if (dibujar) {
+                dibujar = false;
+                dibujarN.setSelected(false);
+            } else if (makeLine) {
+                makeLine = false;
+                dibujarA.setSelected(false);
+            } else if (limpiar) {
+                limpiar = false;
+                clear.setSelected(false);
+            } else if (borrar) {
+                borrar = false;
+                eraserN.setSelected(false);
+            }
+            eraserLine = !eraserLine;
+            JOptionPane.showMessageDialog(rootPane, "Seleccione los nodos que se conectan por medio de esa arista.");
+        }
+    }//GEN-LAST:event_eraserAActionPerformed
 
     public void desSeleccionar() {
         seleccionados = new ArrayList<>();
@@ -746,6 +808,7 @@ public class EdicionGrafo extends javax.swing.JFrame {
     private javax.swing.JToggleButton dibujarA;
     private javax.swing.JToggleButton dibujarN;
     private javax.swing.JMenuItem ejecutar;
+    private javax.swing.JToggleButton eraserA;
     private javax.swing.JToggleButton eraserN;
     private javax.swing.JMenuItem exit;
     private javax.swing.JMenuItem getImage;

@@ -122,6 +122,7 @@
                           <Component id="cancelar" alignment="0" max="32767" attributes="0"/>
                           <Component id="algoritmo" alignment="0" pref="138" max="32767" attributes="0"/>
                           <Component id="ver" alignment="0" max="32767" attributes="0"/>
+                          <Component id="eraserA" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="resultadoText" min="-2" max="-2" attributes="0"/>
@@ -141,9 +142,11 @@
                       <Component id="dibujarA" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="eraserN" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                      <Component id="eraserA" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="clear" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                       <Component id="algoritmo" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
@@ -313,6 +316,14 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
       </AuxValues>
+    </Component>
+    <Component class="javax.swing.JToggleButton" name="eraserA">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Borrar arista"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="eraserAActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

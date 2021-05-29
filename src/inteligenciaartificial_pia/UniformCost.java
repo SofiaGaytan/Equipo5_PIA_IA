@@ -16,7 +16,7 @@ public class UniformCost {
     public Priority search(Nodo start, Nodo meta) {
         ArrayList<Priority> priorityQueue = new ArrayList<>();
 
-        priorityQueue.add(new Priority(start, 0f, new ArrayList<>()));
+        priorityQueue.add(new Priority(start, 0f, new ArrayList<>(), new ArrayList<>()));
 
         while (!priorityQueue.isEmpty()) {
             var minPriority = getMinPriority(priorityQueue);
@@ -33,7 +33,7 @@ public class UniformCost {
 
     private void expandChildNodes(ArrayList<Priority> priorityQueue, Priority priority) {
         for (Edge edge : priority.getNode().getEdges()) {
-            priorityQueue.add(new Priority(edge.getDestination(), edge.getCost() + priority.getCost(), priority.getPath()));
+            priorityQueue.add(new Priority(edge.getDestination(), edge.getCost() + priority.getCost(), priority.getPath(), new ArrayList<>()));
         }
     }
 

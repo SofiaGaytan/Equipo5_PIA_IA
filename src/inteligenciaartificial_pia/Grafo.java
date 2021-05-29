@@ -11,6 +11,7 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.awt.geom.Ellipse2D;
 import java.io.Serializable;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -70,6 +71,32 @@ public class Grafo implements Serializable{
                 break;
             }
         }
+    }
+    
+    public void eliminarArista(ArrayList<Nodo> seleccionados){
+        int i = 0;
+        boolean encontrado = false;
+        int index = 0;
+        for(Arista arista: this.aristas){
+            if(arista.getNodos().equals(seleccionados)){
+                index = i;
+                encontrado = true;
+                break;
+            }
+            i++;
+        }
+        if(encontrado){
+        this.aristas.remove(index);
+        }
+    }
+    
+    public boolean encontrarArista(ArrayList<Nodo> seleccionados){
+        for(Arista arista: this.aristas){
+            if(arista.getNodos().equals(seleccionados)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void borrarAristasNodoEspecifico(Nodo seleccionado) {
